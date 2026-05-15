@@ -14,7 +14,7 @@ for (root, dirs, files) in walkdir((@__DIR__) * "/../systems")
                     try
                         sys = func(2)
                     catch e
-                        @error "Failed (1): $filepath" 
+                        @error "Failed (1): $filepath"
                     end
                 else
                     @error "Failed (2): $filepath"

@@ -1,0 +1,31 @@
+run_id: apply-eco-6-groebner
+track: apply_vs_axf4
+job_id: apply-eco-6-groebner
+system_ref: systems/eco/eco.md
+input_ref: systems/eco/txt/eco_6.txt
+software: Groebner.groebner
+version: 0.10.3
+runner: groebner_jl
+threads: 8
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+status: ok
+exit_code: 0
+wall_time_seconds: 0.0010801
+process_wall_time_seconds: 5.528726
+started_at_utc: 2026-05-15T14:45:07Z
+finished_at_utc: 2026-05-15T14:45:13Z
+runner_host: DESKTOP-RAOJN57
+runner_os: Windows-10-10.0.19045-SP0
+runner_python: 3.10.0
+command: C:\Users\User\AppData\Local\Microsoft\WindowsApps\julia.EXE --startup-file=no "C:\projects\Alexander Demin\gb_benchmarks\bench\internal\groebner_jl_worker.jl" --input "C:\projects\Alexander Demin\gb_benchmarks\systems\eco\txt\eco_6.txt" --field GF(2147483647) --order degrevlex --threads 8 --method groebner
+
+[stdout]
+GBBENCH_WALL_TIME=0.0010801
+GBBENCH_BYTES=619310
+GBBENCH_VERSION=0.10.3
+
+[stderr]
+

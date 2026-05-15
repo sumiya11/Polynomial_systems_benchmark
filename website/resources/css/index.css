@@ -11,6 +11,7 @@ h1 {
 .container {
   margin-top: 20px;
   margin-left: 30px;
+  margin-right: 30px;
 }
 
 a {
@@ -101,4 +102,49 @@ h1, h2, h3, h4 {
 
 .spaced {
   margin-bottom: 30px; /* Custom class for spacing */
+}
+
+.callout {
+  margin: 20px 30px 0 30px;
+  padding: 14px 18px;
+  border-left: 4px solid SeaGreen;
+  background: rgb(241, 248, 243);
+}
+
+.codeblock {
+  white-space: pre-wrap;
+  background: rgb(250, 247, 239);
+  border: 1px solid rgb(216, 210, 196);
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow-x: auto;
+}
+
+.schema-table {
+  width: calc(100% - 60px);
+  margin: 20px 30px;
+  border-collapse: collapse;
+}
+
+.schema-table th,
+.schema-table td {
+  border: 1px solid rgb(216, 210, 196);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.schema-table th {
+  background: rgb(241, 248, 243);
+}
+
+.artifact-links a {
+  margin-right: 16px;
+}
+
+.profile-image {
+  width: min(100%, 860px);
+  height: auto;
+  border: 1px solid rgb(216, 210, 196);
+  background: rgb(252, 251, 247);
 }

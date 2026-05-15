@@ -1,2 +1,6 @@
 .vscode
 build/
+axgrob/
+venv/
+.venv/
+__pycache__/

@@ -16,6 +16,7 @@ end
 skip = ["siwr"]
 
 ranges = Dict(
+    "chandra" => 2:15,
     "katsura" => 2:15,
     "cyclic" => 2:15,
     "noon" => 2:15,
@@ -54,9 +55,11 @@ function generate_many_txt()
                             try
                                 sys = func(n)
                                 needs_n = true
-                            catch
+                            catch e
+                                @warn "Failed to call $filepath with n=$n: $e"
                             end
                         else
+                            @warn "Failed to call $filepath: $e"
                         end
                     end
                     sys === nothing && continue

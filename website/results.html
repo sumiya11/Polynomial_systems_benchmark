@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benchmark results</title>
+  <link href="./resources/css/index.css" type="text/css" rel="stylesheet">
+  <link href="./resources/css/results.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+
+<h1>Polynomial systems benchmark</h1>
+
+<div class="navbar" id="myNavbar">
+    <a href="about.html">About</a>
+    <a href="index.html">Systems</a>
+    <a href="results.html">Results</a>
+    <a href="contribute.html">Contribute</a>
+    <a href="logs.html">Logs</a>
+    <a href="https://github.com/sumiya11/GroebnerBenchmark">GitHub</a>
+
+    <a href="javascript:void(0);"
+       class="icon"
+       onclick="toggleMenu()">
+      &#9776;
+    </a>
+  </div>
+
+<div class="page-shell">
+  <div class="displayed-experiment-bar">
+    <div class="title-selector">
+      <select id="trackSelector" aria-label="Displayed experiment"></select>
+    </div>
+  </div>
+
+  <section class="section-block">
+    <h2>1. Overview</h2>
+    <div class="overview-main">
+      <div class="overview-visual">
+        <div id="profileFigure" class="profile-figure">Loading profile...</div>
+      </div>
+      <div class="side-panel overview-sidebar">
+        <div class="sidebar-section">
+          <h3>Experiment</h3>
+          <ul class="info-list">
+            <li class="info-row">
+              <span class="info-label">Date</span>
+              <span class="info-value" id="currentExperimentDate">Loading...</span>
+            </li>
+            <li class="info-row">
+              <span class="info-label">Uploaded by</span>
+              <a class="list-link" id="currentExperimentUploader" href="https://github.com/sumiya11">github.com/sumiya11</a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Benchmark scope</h3>
+          <ul class="info-list">
+            <li class="info-row info-row-block">
+              <span class="info-label">Software</span>
+              <details class="instance-details">
+                <summary id="currentExperimentSoftwareSummary">Loading...</summary>
+                <ul class="compact-list" id="currentExperimentSoftware"></ul>
+              </details>
+            </li>
+            <li class="info-row info-row-block">
+              <span class="info-label">Instances</span>
+              <details class="instance-details">
+                <summary id="currentExperimentInstanceSummary">Loading...</summary>
+                <ul class="compact-list" id="currentExperimentInstances"></ul>
+              </details>
+            </li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Platform</h3>
+          <ul class="info-list">
+            <li class="info-row">
+              <span class="info-label">OS</span>
+              <span class="info-value" id="currentExperimentOs">Loading...</span>
+            </li>
+            <li class="info-row info-row-block">
+              <span class="info-label">CPU</span>
+              <span class="info-value" id="currentExperimentCpu">Loading...</span>
+            </li>
+            <li class="info-row">
+              <span class="info-label">Flags</span>
+              <span class="info-value" id="currentExperimentFlags">Loading...</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <h2>2. Reproducing This Experiment</h2>
+    <pre class="codeblock reproduce-codeblock" id="reproduceCommand">git clone https://github.com/sumiya11/GroebnerBenchmark.git
+cd GroebnerBenchmark
+python -m pip install -r requirements.txt
+python bench/benchmark.py test</pre>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <h2>3. Example vs. Software Timings</h2>
+      <a class="section-action" id="downloadTimingsCsv" href="#" download>Download CSV</a>
+    </div>
+    <div class="table-wrap table-wrap-compact">
+      <table class="results-table matrix-table" id="timingsMatrixTable">
+        <thead>
+          <tr>
+            <th>Example</th>
+            <th>Loading...</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="2">Loading timings...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <h2>4. Results Table</h2>
+    <div class="results-controls">
+      <label>
+        Family
+        <select id="familyFilter">
+          <option value="">All families</option>
+        </select>
+      </label>
+      <label>
+        Software
+        <select id="softwareFilter">
+          <option value="">All software</option>
+        </select>
+      </label>
+      <label>
+        Instance search
+        <input id="searchFilter" type="search" placeholder="cyclic-3, noon-2, ...">
+      </label>
+    </div>
+    <div class="table-wrap">
+      <table class="results-table" id="resultsTable">
+        <thead>
+          <tr>
+            <th>Instance</th>
+            <th>Family</th>
+            <th>Software</th>
+            <th>Threads</th>
+            <th>Status</th>
+            <th>Measured time (s)</th>
+            <th>Process time (s)</th>
+            <th>System</th>
+            <th>Input</th>
+            <th>Log</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="10">Loading results...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script id="embeddedExperiments" type="application/json">[]</script>
+<script id="embeddedTrackRuns" type="application/json">{}</script>
+<script id="embeddedTrackSummaries" type="application/json">{}</script>
+<script id="embeddedTrackProfiles" type="application/json">{}</script>
+<script id="embeddedDefaultExperimentId" type="application/json">""</script>
+<script src="./resources/js/results.js"></script>
+
+</body>
+</html>

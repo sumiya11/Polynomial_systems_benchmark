@@ -1,0 +1,52 @@
+{
+  "job_id_prefix": "apply",
+  "examples": [
+    "cyclic-2",
+    "cyclic-3",
+    "cyclic-4",
+    "eco-2",
+    "eco-3",
+    "eco-4",
+    "noon-2",
+    "noon-3",
+    "noon-4"
+  ],
+  "software": [
+    {
+      "runner": "groebner_jl",
+      "software": "Groebner.groebner",
+      "version": "local",
+      "threads": "8",
+      "method": "groebner",
+      "job_id_suffix": "groebner"
+    },
+    {
+      "runner": "groebner_jl",
+      "software": "Groebner.groebner_apply!",
+      "version": "local",
+      "threads": "8",
+      "method": "groebner_apply!",
+      "job_id_suffix": "groebner-apply"
+    },
+    {
+      "runner": "axf4",
+      "software": "axf4 -t 1",
+      "version": "local-copy",
+      "threads": "1",
+      "job_id_suffix": "axf4-t1"
+    },
+    {
+      "runner": "axf4",
+      "software": "axf4 -t 8",
+      "version": "local-copy",
+      "threads": "8",
+      "job_id_suffix": "axf4-t8"
+    }
+  ],
+  "field": "GF(2147483647)",
+  "order": "degrevlex",
+  "timeout_s": 60,
+  "label": "Apply vs axf4",
+  "sort_order": 20,
+  "default_display": false
+}
