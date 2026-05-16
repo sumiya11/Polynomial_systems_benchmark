@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import argparse
 import csv
+import dataclasses
 import functools
 import hashlib
 import importlib.util
 import io
 import json
+import math
 import os
 import platform
 import re
@@ -44,9 +46,7 @@ OUTPUT_COLUMNS = [
     "system_id",
     "instance_id",
     "system_ref",
-    "system_sha256",
     "input_ref",
-    "input_sha256",
     "software",
     "version",
     "runner",
@@ -55,6 +55,8 @@ OUTPUT_COLUMNS = [
     "order",
     "hardware_track",
     "timeout_s",
+    "memory_limit_mb",
+    "peak_memory_mb",
     "status",
     "exit_code",
     "wall_time_seconds",
@@ -74,6 +76,7 @@ OUTPUT_COLUMNS = [
 
 EXPERIMENT_COLUMNS = [
     "experiment_id",
+    "label",
     "track",
     "run_stage",
     "generated_at_utc",
@@ -89,6 +92,8 @@ EXPERIMENT_COLUMNS = [
     "shared_runner_host",
     "shared_runner_os",
     "shared_timeout_s",
+    "shared_memory_limit_mb",
+    "shared_peak_memory_mb",
     "notes",
     "replay_command",
 ]
@@ -111,14 +116,76 @@ ALIASES = {
 GF_PATTERN = re.compile(r"^GF\((\d+)\)$", re.IGNORECASE)
 GBBENCH_TIME_PATTERN = re.compile(r"^GBBENCH_WALL_TIME=(.+)$", re.MULTILINE)
 GBBENCH_VERSION_PATTERN = re.compile(r"^GBBENCH_VERSION=(.+)$", re.MULTILINE)
+CUTE_MACHINE_ADJECTIVES = [
+    "Amber",
+    "Brisk",
+    "Cloudy",
+    "Dapper",
+    "Gentle",
+    "Lucky",
+    "Merry",
+    "Misty",
+    "Nimble",
+    "Pebble",
+    "Quiet",
+    "Sandy",
+    "Silver",
+    "Sleepy",
+    "Snowy",
+    "Sunny",
+    "Velvet",
+    "Willow",
+]
+CUTE_MACHINE_COLORS = [
+    "Aqua",
+    "Berry",
+    "Cedar",
+    "Coral",
+    "Ember",
+    "Honey",
+    "Ivory",
+    "Juniper",
+    "Maple",
+    "Moss",
+    "Ocean",
+    "Olive",
+    "Saffron",
+    "Sky",
+    "Slate",
+    "Walnut",
+]
+CUTE_MACHINE_ANIMALS = [
+    "Badger",
+    "Fox",
+    "Heron",
+    "Lynx",
+    "Marten",
+    "Otter",
+    "Panda",
+    "Quail",
+    "Raccoon",
+    "Seal",
+    "Stoat",
+    "Swift",
+    "Tern",
+    "Walrus",
+    "Wren",
+    "Yak",
+]
+
+
+@dataclasses.dataclass(frozen=True)
+class TrackOutputLayout:
+    output_track: str
+    machine_label: str | None
+    experiment_title: str
+    results_path: Path
+    experiment_path: Path
+    logs_dir: Path
 
 
 def repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
-
-
-def website_build_script(root: Path) -> Path:
-    return root / "website" / "build.py"
 
 
 @functools.lru_cache(maxsize=1)
@@ -139,6 +206,47 @@ def resolve_path(root: Path, path_text: str | Path) -> Path:
     return root / candidate
 
 
+def slugify_track_fragment(text: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "_", text.strip().lower()).strip("_")
+    if not slug:
+        raise ValueError("Machine label must contain at least one ASCII letter or digit")
+    return slug
+
+
+def output_track_name(track_name: str, machine_label: str | None) -> str:
+    label = (machine_label or "").strip()
+    if not label:
+        return track_name
+    return f"{track_name}__{slugify_track_fragment(label)}"
+
+
+def output_track_paths(root: Path, output_track: str) -> tuple[Path, Path, Path]:
+    results_dir = root / "results" / output_track
+    return results_dir / "runs.tsv", results_dir / "experiment.txt", results_dir / "logs"
+
+
+def machine_label_seed() -> str:
+    parts = [
+        platform.node(),
+        platform.system(),
+        platform.release(),
+        runner_processor(),
+        runner_machine(),
+        runner_cpu_count(),
+        str(struct.calcsize("P") * 8),
+    ]
+    return " | ".join(part.strip() for part in parts if part and part.strip())
+
+
+def automatic_machine_label() -> str:
+    seed = machine_label_seed() or "gbbench-machine"
+    digest = hashlib.sha256(seed.encode("utf-8")).digest()
+    adjective = CUTE_MACHINE_ADJECTIVES[digest[0] % len(CUTE_MACHINE_ADJECTIVES)]
+    color = CUTE_MACHINE_COLORS[digest[1] % len(CUTE_MACHINE_COLORS)]
+    animal = CUTE_MACHINE_ANIMALS[digest[2] % len(CUTE_MACHINE_ANIMALS)]
+    return f"{adjective} {color} {animal}"
+
+
 def track_config_path(root: Path, track_name: str) -> Path:
     return root / "bench" / track_name / TRACK_CONFIG_NAME
 
@@ -150,8 +258,6 @@ def inferred_track_defaults(track_name: str) -> dict[str, object]:
         "experiment": (results_dir / "experiment.txt").as_posix(),
         "logs_dir": (results_dir / "logs").as_posix(),
         "run_stage": "benchmark",
-        "build_site": True,
-        "bootstrap": True,
     }
 
 
@@ -196,19 +302,34 @@ def resolve_track(root: Path, track_name: str) -> tuple[str, dict[str, object]]:
     return canonical, load_track_config(root, canonical)
 
 
-def compute_sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with open(path, "rb") as handle:
-        while True:
-            chunk = handle.read(65536)
-            if not chunk:
-                break
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def iso_timestamp(now: datetime) -> str:
     return now.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def normalize_optional_positive_int_text(value: object, field_name: str) -> str:
+    text = stringify_config_value(value).strip()
+    if not text:
+        return ""
+    try:
+        normalized = int(text)
+    except ValueError as exc:
+        raise ValueError(f"{field_name} must be a positive integer") from exc
+    if normalized <= 0:
+        raise ValueError(f"{field_name} must be a positive integer")
+    return str(normalized)
+
+
+def parse_optional_positive_int_text(value: str | None, field_name: str) -> int | None:
+    text = (value or "").strip()
+    if not text:
+        return None
+    try:
+        normalized = int(text)
+    except ValueError as exc:
+        raise ValueError(f"{field_name} must be a positive integer") from exc
+    if normalized <= 0:
+        raise ValueError(f"{field_name} must be a positive integer")
+    return normalized
 
 
 def runner_processor() -> str:
@@ -275,31 +396,13 @@ def hardware_summary(rows: list[dict[str, str]]) -> str:
     return " | ".join(part for part in parts if part)
 
 
-def interpreter_has_module(python_executable: str, module_name: str) -> bool:
-    probe = subprocess.run(
-        [python_executable, "-c", f"import {module_name}"],
-        capture_output=True,
-        text=True,
-    )
-    return probe.returncode == 0
-
-
-def build_python(root: Path) -> str:
-    if interpreter_has_module(sys.executable, "markdown"):
-        return sys.executable
-
-    for candidate in [root / "venv" / "Scripts" / "python.exe", root / "venv" / "bin" / "python"]:
-        if candidate.is_file() and interpreter_has_module(str(candidate), "markdown"):
-            return str(candidate)
-
-    raise RuntimeError(
-        "Cannot build the website because no Python interpreter with the markdown package was found. "
-        "Install requirements into the active Python or the repository venv."
-    )
-
-
 def julia_binary() -> str:
     binary = os.environ.get("JULIA_BINARY") or shutil.which("julia") or shutil.which("julia.exe")
+    if binary and sys.platform.startswith("linux") and Path(binary).suffix.lower() == ".exe":
+        raise FileNotFoundError(
+            "Found a Windows Julia executable while running on Linux/WSL. "
+            "Install a Linux Julia in WSL or set JULIA_BINARY to that Linux executable."
+        )
     if not binary:
         raise FileNotFoundError("Julia executable not found")
     return binary
@@ -327,25 +430,18 @@ def groebner_jl_version() -> str:
     return probe.stdout.strip()
 
 
-def ensure_julia_packages() -> None:
+def ensure_groebner_runtime() -> None:
+    julia = julia_binary()
     check = subprocess.run(
-        [julia_binary(), "-e", "using Groebner, AbstractAlgebra"],
+        [julia, "--startup-file=no", "-e", "using Groebner, AbstractAlgebra"],
         capture_output=True,
         text=True,
     )
-    if check.returncode == 0:
-        return
-
-    install = subprocess.run(
-        [julia_binary(), "-e", 'import Pkg; Pkg.add(["Groebner", "AbstractAlgebra"])'],
-        capture_output=True,
-        text=True,
-    )
-    if install.returncode != 0:
+    if check.returncode != 0:
         raise RuntimeError(
-            "Failed to install Julia packages for Groebner.jl benchmarking.\n"
-            f"stdout:\n{install.stdout}\n"
-            f"stderr:\n{install.stderr}"
+            "Julia runtime is missing required packages for Groebner.jl benchmarking.\n"
+            f"stdout:\n{check.stdout}\n"
+            f"stderr:\n{check.stderr}"
         )
 
 
@@ -384,15 +480,63 @@ def format_command(command: list[str]) -> str:
     return subprocess.list2cmdline(command)
 
 
-def run_process(
-    command: list[str],
+def command_text(command: list[str] | str) -> str:
+    if isinstance(command, str):
+        return command
+    return format_command(command)
+
+
+def memory_limit_bytes(memory_limit_mb: int | None) -> int | None:
+    if memory_limit_mb is None:
+        return None
+    return memory_limit_mb * 1024 * 1024
+
+
+def memory_limit_mb_from_gb(memory_limit_gb: float | None) -> int | None:
+    if memory_limit_gb is None:
+        return None
+    if memory_limit_gb <= 0:
+        raise ValueError("memory_limit_gb must be positive")
+    return max(1, math.ceil(memory_limit_gb * 1024))
+
+
+def limit_process_address_space(memory_limit_mb: int):
+    limit_bytes = memory_limit_bytes(memory_limit_mb)
+    if limit_bytes is None:
+        return None
+
+    def apply_limit() -> None:
+        import resource
+
+        for name in ("RLIMIT_AS", "RLIMIT_DATA", "RLIMIT_RSS"):
+            if hasattr(resource, name):
+                resource.setrlimit(getattr(resource, name), (limit_bytes, limit_bytes))
+
+    return apply_limit
+
+
+def run_captured_subprocess(
+    command: list[str] | str,
     cwd: Path,
     timeout_s: float | None,
-    env: dict[str, str] | None = None,
-) -> dict[str, str]:
-    merged_env = os.environ.copy()
-    if env:
-        merged_env.update(env)
+    env: dict[str, str],
+    shell: bool = False,
+    memory_limit_mb: int | None = None,
+) -> subprocess.CompletedProcess[str]:
+    if os.name == "nt":
+        import benchmark_windows
+
+        return benchmark_windows.run_process(command, cwd, timeout_s, env, shell, memory_limit_mb)
+
+    if sys.platform.startswith("linux"):
+        import benchmark_linux
+
+        return benchmark_linux.run_process(command, cwd, timeout_s, env, shell, memory_limit_mb)
+
+    if sys.platform == "darwin":
+        import benchmark_macos
+
+        return benchmark_macos.run_process(command, cwd, timeout_s, env, shell, memory_limit_mb)
 
     completed = subprocess.run(
         command,
@@ -400,14 +544,39 @@ def run_process(
         capture_output=True,
         text=True,
         timeout=timeout_s,
-        env=merged_env,
+        env=env,
+        shell=shell,
+        preexec_fn=limit_process_address_space(memory_limit_mb),
+    )
+    completed.peak_memory_mb = None
+    return completed
+
+
+def run_process(
+    command: list[str],
+    cwd: Path,
+    timeout_s: float | None,
+    env: dict[str, str] | None = None,
+    memory_limit_mb: int | None = None,
+) -> dict[str, str]:
+    merged_env = os.environ.copy()
+    if env:
+        merged_env.update(env)
+
+    completed = run_captured_subprocess(
+        command,
+        cwd,
+        timeout_s,
+        merged_env,
+        memory_limit_mb=memory_limit_mb,
     )
     return {
         "status": "ok" if completed.returncode == 0 else "error",
         "exit_code": str(completed.returncode),
         "stdout": completed.stdout,
         "stderr": completed.stderr,
-        "command": format_command(command),
+        "peak_memory_mb": stringify_config_value(getattr(completed, "peak_memory_mb", None)),
+        "command": command_text(command),
     }
 
 
@@ -438,6 +607,7 @@ def run_axf4(
     root: Path,
     input_path: Path,
     timeout_s: float | None,
+    memory_limit_mb: int | None = None,
     axf4_binary: Path | None = None,
 ) -> dict[str, str]:
     parsed = parse_benchmark_input(input_path)
@@ -462,14 +632,20 @@ def run_axf4(
             configured_threads,
             str(temp_input),
         ]
-        result = run_process(command, root, timeout_s)
+        result = run_process(command, root, timeout_s, memory_limit_mb=memory_limit_mb)
 
     result["runner"] = "axf4"
     result["threads"] = configured_threads
     return result
 
 
-def run_groebner_jl(job: dict[str, str], root: Path, input_path: Path, timeout_s: float | None) -> dict[str, str]:
+def run_groebner_jl(
+    job: dict[str, str],
+    root: Path,
+    input_path: Path,
+    timeout_s: float | None,
+    memory_limit_mb: int | None = None,
+) -> dict[str, str]:
     parsed = parse_benchmark_input(input_path)
     field = resolve_field(job["field"], int(parsed["characteristic"]))
     threads = job.get("threads", "").strip() or "1"
@@ -490,7 +666,7 @@ def run_groebner_jl(job: dict[str, str], root: Path, input_path: Path, timeout_s
         "--method",
         method,
     ]
-    result = run_process(command, root, timeout_s, env={"JULIA_NUM_THREADS": threads})
+    result = run_process(command, root, timeout_s, env={"JULIA_NUM_THREADS": threads}, memory_limit_mb=memory_limit_mb)
     detected_version = groebner_jl_version()
     if detected_version:
         result["version"] = detected_version
@@ -546,6 +722,32 @@ def stringify_config_value(value: object) -> str:
     return str(value)
 
 
+def experiment_label(track: dict[str, object], track_name: str, machine_label: str | None) -> str:
+    base_label = stringify_config_value(track.get("label")).strip() or track_name.replace("_", " ").title()
+    suffix = (machine_label or "").strip()
+    if not suffix:
+        return base_label
+    return f"{base_label} ({suffix})"
+
+
+def resolve_track_output_layout(
+    root: Path,
+    track_name: str,
+    track: dict[str, object],
+) -> TrackOutputLayout:
+    resolved_machine_label = automatic_machine_label()
+    output_track = output_track_name(track_name, resolved_machine_label)
+    results_path, experiment_path, logs_dir = output_track_paths(root, output_track)
+    return TrackOutputLayout(
+        output_track=output_track,
+        machine_label=resolved_machine_label,
+        experiment_title=experiment_label(track, track_name, resolved_machine_label),
+        results_path=results_path,
+        experiment_path=experiment_path,
+        logs_dir=logs_dir,
+    )
+
+
 def normalized_example_entry(track: dict[str, object], entry: object) -> dict[str, str]:
     if isinstance(entry, str):
         raw: dict[str, object] = {"instance_id": entry}
@@ -571,6 +773,7 @@ def normalized_example_entry(track: dict[str, object], entry: object) -> dict[st
         "order": stringify_config_value(raw.get("order", track.get("order"))).strip(),
         "hardware_track": stringify_config_value(raw.get("hardware_track", track.get("hardware_track"))).strip(),
         "timeout_s": stringify_config_value(raw.get("timeout_s", track.get("timeout_s"))).strip(),
+        "memory_limit_mb": normalize_optional_positive_int_text(raw.get("memory_limit_mb", track.get("memory_limit_mb")), "memory_limit_mb"),
     }
 
 
@@ -591,6 +794,7 @@ def normalized_generated_software(entry: object) -> dict[str, str]:
         "job_id_suffix": stringify_config_value(entry.get("job_id_suffix")).strip(),
         "method": stringify_config_value(entry.get("method")).strip(),
         "multi_thread": stringify_config_value(entry.get("multi_thread")).strip(),
+        "memory_limit_mb": normalize_optional_positive_int_text(entry.get("memory_limit_mb"), "memory_limit_mb"),
     }
     if not software["job_id_suffix"]:
         raise ValueError("Each generated software entry must define a non-empty job_id_suffix")
@@ -634,6 +838,7 @@ def build_generated_jobs(track_name: str, track: dict[str, object]) -> list[dict
                 "order": normalized_example["order"],
                 "hardware_track": normalized_example["hardware_track"],
                 "timeout_s": normalized_example["timeout_s"],
+                "memory_limit_mb": software["memory_limit_mb"] or normalized_example["memory_limit_mb"],
             }
             jobs.append(validate_job(job, f"generated job {job_id} in track {track_name}"))
     return jobs
@@ -665,6 +870,7 @@ def normalized_inline_job(track_name: str, track: dict[str, object], entry: obje
         "order": stringify_config_value(entry.get("order") or base["order"]).strip(),
         "hardware_track": stringify_config_value(entry.get("hardware_track") or base["hardware_track"]).strip(),
         "timeout_s": stringify_config_value(entry.get("timeout_s") or base["timeout_s"]).strip(),
+        "memory_limit_mb": normalize_optional_positive_int_text(entry.get("memory_limit_mb") or base["memory_limit_mb"], "memory_limit_mb"),
     }
     return validate_job(job, f"inline job {job_id} in track {track_name}")
 
@@ -700,6 +906,12 @@ def job_timeout_s(job: dict[str, str], track: dict[str, object], override: float
     return 86400.0
 
 
+def job_memory_limit_mb(job: dict[str, str], override: int | None) -> int | None:
+    if override is not None:
+        return override
+    return parse_optional_positive_int_text(job.get("memory_limit_mb", ""), "memory_limit_mb")
+
+
 def report_runner_result(result: dict[str, str], elapsed: float) -> int:
     status = result.get("status")
     if status == "timeout":
@@ -709,7 +921,11 @@ def report_runner_result(result: dict[str, str], elapsed: float) -> int:
         print(result.get("stderr") or result.get("stdout") or "Run failed")
         return 1
 
-    print(result.get("wall_time_seconds") or f"{elapsed:.6f}")
+    summary = result.get("wall_time_seconds") or f"{elapsed:.6f}"
+    peak_memory_mb = result.get("peak_memory_mb", "").strip()
+    if peak_memory_mb:
+        summary = f"{summary} {peak_memory_mb}MB"
+    print(summary)
     return 0
 
 
@@ -717,8 +933,8 @@ def run_named_runner(
     runner_name: str,
     track_name: str,
     timeout_override: float | None = None,
-    bootstrap: bool | None = None,
     axf4_binary: str | None = None,
+    memory_limit_mb_override: int | None = None,
 ) -> int:
     root = repo_root()
     canonical_track, track = resolve_track(root, track_name)
@@ -733,12 +949,11 @@ def run_named_runner(
         return 1
 
     if runner_name == "groebner_jl":
-        should_bootstrap = bool(track.get("bootstrap")) if bootstrap is None else bootstrap
-        if should_bootstrap:
-            try:
-                ensure_julia_packages()
-            except (OSError, RuntimeError) as exc:
-                print(f"Warning: Julia bootstrap skipped: {exc}", file=sys.stderr)
+        try:
+            ensure_groebner_runtime()
+        except (OSError, RuntimeError) as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
 
     try:
         resolved_axf4_binary = resolve_axf4_binary(root, axf4_binary, required=runner_name == "axf4")
@@ -755,10 +970,11 @@ def run_named_runner(
         print(header)
         input_path = resolve_path(root, job["input_ref"])
         timeout_s = job_timeout_s(job, track, timeout_override)
+        memory_limit_mb = job_memory_limit_mb(job, memory_limit_mb_override)
         for attempt in range(3):
             started = time.perf_counter()
             try:
-                result = runner(job, root, input_path, timeout_s)
+                result = runner(job, root, input_path, timeout_s, memory_limit_mb)
             except subprocess.TimeoutExpired:
                 print("Timeout")
                 overall_status = 1
@@ -793,6 +1009,8 @@ def write_log_file(log_path: Path, row: dict[str, str], stdout: str, stderr: str
         f"order: {row['order']}",
         f"hardware_track: {row['hardware_track']}",
         f"timeout_s: {row['timeout_s']}",
+        f"memory_limit_mb: {row['memory_limit_mb']}",
+        f"peak_memory_mb: {row['peak_memory_mb']}",
         f"status: {row['status']}",
         f"exit_code: {row['exit_code']}",
         f"wall_time_seconds: {row['wall_time_seconds']}",
@@ -817,20 +1035,26 @@ def write_log_file(log_path: Path, row: dict[str, str], stdout: str, stderr: str
     log_path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def run_legacy_command(job: dict[str, str], root: Path, timeout_s: float | None) -> dict[str, str]:
-    completed = subprocess.run(
+def run_legacy_command(
+    job: dict[str, str],
+    root: Path,
+    timeout_s: float | None,
+    memory_limit_mb: int | None = None,
+) -> dict[str, str]:
+    completed = run_captured_subprocess(
         job["command"],
-        cwd=root,
+        root,
+        timeout_s,
+        os.environ.copy(),
         shell=True,
-        capture_output=True,
-        text=True,
-        timeout=timeout_s,
+        memory_limit_mb=memory_limit_mb,
     )
     return {
         "status": "ok" if completed.returncode == 0 else "error",
         "exit_code": str(completed.returncode),
         "stdout": completed.stdout,
         "stderr": completed.stderr,
+        "peak_memory_mb": stringify_config_value(getattr(completed, "peak_memory_mb", None)),
         "command": job["command"],
         "wall_time_seconds": "",
         "runner": job.get("runner", "").strip() or "command",
@@ -843,6 +1067,7 @@ def run_job(
     root: Path,
     track_logs_dir: Path,
     axf4_binary: Path | None = None,
+    memory_limit_mb_override: int | None = None,
 ) -> dict[str, str]:
     system_path = resolve_path(root, job["system_ref"])
     input_path = resolve_path(root, job["input_ref"])
@@ -854,14 +1079,15 @@ def run_job(
     started = datetime.now(timezone.utc)
     started_perf = time.perf_counter()
     timeout_s = float(job["timeout_s"].strip()) if job["timeout_s"].strip() else None
+    memory_limit_mb = job_memory_limit_mb(job, memory_limit_mb_override)
 
     try:
         runner_name = job.get("runner", "").strip()
         if runner_name:
             runner = configured_runner(runner_name, axf4_binary)
-            result = runner(job, root, input_path, timeout_s)
+            result = runner(job, root, input_path, timeout_s, memory_limit_mb)
         else:
-            result = run_legacy_command(job, root, timeout_s)
+            result = run_legacy_command(job, root, timeout_s, memory_limit_mb)
     except subprocess.TimeoutExpired as exc:
         result = {
             "status": "timeout",
@@ -893,9 +1119,7 @@ def run_job(
         "system_id": job["system_id"],
         "instance_id": job["instance_id"],
         "system_ref": job["system_ref"],
-        "system_sha256": compute_sha256(system_path),
         "input_ref": job["input_ref"],
-        "input_sha256": compute_sha256(input_path),
         "software": result.get("software", job["software"]),
         "version": result.get("version", job["version"]),
         "runner": result.get("runner", job.get("runner", "").strip() or "command"),
@@ -904,6 +1128,8 @@ def run_job(
         "order": job["order"],
         "hardware_track": job["hardware_track"],
         "timeout_s": job["timeout_s"],
+        "memory_limit_mb": str(memory_limit_mb) if memory_limit_mb is not None else "",
+        "peak_memory_mb": result.get("peak_memory_mb", ""),
         "status": result.get("status", "error"),
         "exit_code": result.get("exit_code", ""),
         "wall_time_seconds": result.get("wall_time_seconds", "") or f"{elapsed:.6f}",
@@ -934,6 +1160,7 @@ def write_results(results_path: Path, rows: list[dict[str, str]]) -> None:
 
 def write_experiment_bundle(
     track_name: str,
+    label: str,
     experiment_path: Path,
     root: Path,
     definition_path: Path,
@@ -947,6 +1174,7 @@ def write_experiment_bundle(
     experiment_path.parent.mkdir(parents=True, exist_ok=True)
     metadata = {
         "experiment_id": track_name,
+        "label": label,
         "track": track_name,
         "run_stage": run_stage,
         "generated_at_utc": iso_timestamp(datetime.now(timezone.utc)),
@@ -962,6 +1190,8 @@ def write_experiment_bundle(
         "shared_runner_host": compact_row_values(rows, "runner_host"),
         "shared_runner_os": compact_row_values(rows, "runner_os"),
         "shared_timeout_s": shared_value(rows, "timeout_s"),
+        "shared_memory_limit_mb": shared_value(rows, "memory_limit_mb"),
+        "shared_peak_memory_mb": shared_value(rows, "peak_memory_mb"),
         "notes": notes,
         "replay_command": replay_command,
     }
@@ -976,80 +1206,146 @@ def write_experiment_bundle(
     experiment_path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def replay_command_for_track(track_name: str, jobs: list[dict[str, str]]) -> str:
-    command = f"python bench/benchmark.py {track_name}"
+def persist_track_outputs(
+    layout: TrackOutputLayout,
+    root: Path,
+    definition_path: Path,
+    rows: list[dict[str, str]],
+    track: dict[str, object],
+    canonical_track: str,
+    jobs: list[dict[str, str]],
+    memory_limit_gb: float | None,
+) -> None:
+    write_results(layout.results_path, rows)
+    if not rows:
+        return
+
+    write_experiment_bundle(
+        track_name=layout.output_track,
+        label=layout.experiment_title,
+        experiment_path=layout.experiment_path,
+        root=root,
+        definition_path=definition_path,
+        results_path=layout.results_path,
+        logs_dir=layout.logs_dir,
+        rows=rows,
+        run_stage=str(track["run_stage"]),
+        notes=stringify_config_value(track.get("notes")).strip(),
+        replay_command=replay_command_for_track(canonical_track, jobs, memory_limit_gb),
+    )
+
+
+def replay_command_for_track(
+    track_name: str,
+    jobs: list[dict[str, str]],
+    memory_limit_gb: float | None,
+) -> str:
+    command = ["python", "bench/benchmark.py", track_name]
+    if memory_limit_gb is not None:
+        command.extend(["--memory-limit-gb", f"{memory_limit_gb:g}"])
     if any(job.get("runner", "").strip() == "axf4" for job in jobs):
-        command += " --axf4-binary PATH_TO_AXF4"
-    return command
+        command.extend(["--axf4-binary", "PATH_TO_AXF4"])
+    return format_command(command)
+
+
+def print_run_banner(
+    track_name: str,
+    layout: TrackOutputLayout,
+    job_count: int,
+    memory_limit_gb: float | None,
+) -> None:
+    print(f"Running benchmark track: {track_name}", flush=True)
+    if layout.output_track != track_name:
+        print(f"Output track: {layout.output_track}", flush=True)
+    if layout.machine_label:
+        print(f"Machine label: {layout.machine_label}", flush=True)
+    print(f"Jobs: {job_count}", flush=True)
+    if memory_limit_gb is not None:
+        print(f"Memory limit: {memory_limit_gb:g} GB per run", flush=True)
+    print(f"Results file: {layout.results_path}", flush=True)
+
+
+def print_job_progress(index: int, total: int, job: dict[str, str]) -> None:
+    software = " ".join(part for part in [job.get("software", "").strip(), job.get("version", "").strip()] if part)
+    suffix = f" - {software}" if software else ""
+    print(f"[{index}/{total}] {job['job_id']}{suffix}", flush=True)
+
+
+def print_job_summary(row: dict[str, str]) -> None:
+    status = row.get("status", "error")
+    wall_time = row.get("wall_time_seconds", "").strip()
+    peak_memory_mb = row.get("peak_memory_mb", "").strip()
+    summary = status
+    details = []
+    if wall_time:
+        details.append(f"{wall_time}s")
+    if peak_memory_mb:
+        details.append(f"{peak_memory_mb}MB peak")
+    if details:
+        summary = f"{summary} ({', '.join(details)})"
+    print(f"    {summary}", flush=True)
 
 
 def run_track(
     track_name: str,
-    build_site: bool | None,
-    bootstrap: bool | None,
-    notes: str | None,
     axf4_binary: str | None,
+    memory_limit_gb: float | None,
 ) -> None:
     root = repo_root()
     canonical_track, track = resolve_track(root, track_name)
     definition_path = track_config_path(root, canonical_track)
-    results_path = resolve_path(root, str(track["results"]))
-    experiment_path = resolve_path(root, str(track["experiment"]))
-    track_logs_dir = resolve_path(root, str(track["logs_dir"]))
-
     jobs = load_track_jobs(canonical_track, track)
+    layout = resolve_track_output_layout(root, canonical_track, track)
+    memory_limit_mb = memory_limit_mb_from_gb(memory_limit_gb)
+    print_run_banner(canonical_track, layout, len(jobs), memory_limit_gb)
     resolved_axf4_binary = resolve_axf4_binary(
         root,
         axf4_binary,
         required=any(job.get("runner", "").strip() == "axf4" for job in jobs),
     )
-    should_bootstrap = bool(track["bootstrap"]) if bootstrap is None else bootstrap
-    should_build_site = bool(track["build_site"]) if build_site is None else build_site
-    if should_bootstrap and any(job.get("runner", "").strip() == "groebner_jl" for job in jobs):
-        try:
-            ensure_julia_packages()
-        except (OSError, RuntimeError) as exc:
-            print(f"Warning: Julia bootstrap skipped: {exc}", file=sys.stderr)
+    if any(job.get("runner", "").strip() == "groebner_jl" for job in jobs):
+        ensure_groebner_runtime()
 
-    rows = [run_job(job, canonical_track, root, track_logs_dir, resolved_axf4_binary) for job in jobs]
-    write_results(results_path, rows)
-    write_experiment_bundle(
-        track_name=canonical_track,
-        experiment_path=experiment_path,
-        root=root,
-        definition_path=definition_path,
-        results_path=results_path,
-        logs_dir=track_logs_dir,
-        rows=rows,
-        run_stage=str(track["run_stage"]),
-        notes=notes or stringify_config_value(track.get("notes")).strip(),
-        replay_command=replay_command_for_track(canonical_track, jobs),
-    )
+    rows = []
+    persist_track_outputs(layout, root, definition_path, rows, track, canonical_track, jobs, memory_limit_gb)
+    for index, job in enumerate(jobs, start=1):
+        print_job_progress(index, len(jobs), job)
+        row = run_job(job, layout.output_track, root, layout.logs_dir, resolved_axf4_binary, memory_limit_mb)
+        rows.append(row)
+        persist_track_outputs(layout, root, definition_path, rows, track, canonical_track, jobs, memory_limit_gb)
+        print_job_summary(row)
 
-    print(f"Wrote {len(rows)} runs to {results_path}")
-    print(f"Wrote experiment bundle to {experiment_path}")
+    if not rows:
+        write_experiment_bundle(
+            track_name=layout.output_track,
+            label=layout.experiment_title,
+            experiment_path=layout.experiment_path,
+            root=root,
+            definition_path=definition_path,
+            results_path=layout.results_path,
+            logs_dir=layout.logs_dir,
+            rows=rows,
+            run_stage=str(track["run_stage"]),
+            notes=stringify_config_value(track.get("notes")).strip(),
+            replay_command=replay_command_for_track(canonical_track, jobs, memory_limit_gb),
+        )
 
-    if should_build_site:
-        subprocess.run([build_python(root), str(website_build_script(root))], cwd=root, check=True)
+    print(f"Wrote {len(rows)} runs to {layout.results_path}", flush=True)
+    print(f"Wrote experiment bundle to {layout.experiment_path}", flush=True)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run one named benchmark track and optionally rebuild the website.")
+    parser = argparse.ArgumentParser(description="Run one named benchmark track.")
     choices = sorted(set(available_tracks(repo_root())) | set(ALIASES))
     parser.add_argument("track", nargs="?", default="test", choices=choices, help="Named benchmark track to run.")
     parser.add_argument("--axf4-binary", help="Path to the axf4 executable. Required when the selected track includes axf4 jobs.")
-    parser.add_argument("--build-site", dest="build_site", action="store_true", help="Force a website rebuild after the benchmark finishes.")
-    parser.add_argument("--no-build-site", dest="build_site", action="store_false", help="Skip the website rebuild.")
-    parser.add_argument("--bootstrap", dest="bootstrap", action="store_true", help="Force Julia dependency bootstrapping before the run.")
-    parser.add_argument("--no-bootstrap", dest="bootstrap", action="store_false", help="Skip Julia dependency bootstrapping.")
-    parser.add_argument("--notes", help="Override the note stored in the experiment bundle.")
-    parser.set_defaults(build_site=None, bootstrap=None)
+    parser.add_argument("--memory-limit-gb", type=float, help="Override the memory limit for each run in gigabytes.")
     return parser
 
 
-def main(argv: list[str] | None = None) -> None:
+def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    run_track(args.track, args.build_site, args.bootstrap, args.notes, args.axf4_binary)
+    run_track(args.track, args.axf4_binary, args.memory_limit_gb)
 
 
 if __name__ == "__main__":

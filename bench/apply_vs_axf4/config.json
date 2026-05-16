@@ -1,15 +1,280 @@
 {
   "job_id_prefix": "apply",
   "examples": [
+    {
+      "instance_id": "akt_pathway-main",
+      "system_id": "akt_pathway",
+      "system_ref": "systems/akt_pathway/akt_pathway.md",
+      "input_ref": "systems/akt_pathway/txt/akt_pathway.txt"
+    },
+    {
+      "instance_id": "caprasse-main",
+      "system_id": "caprasse",
+      "system_ref": "systems/caprasse/caprasse.md",
+      "input_ref": "systems/caprasse/txt/caprasse.txt"
+    },
+    {
+      "instance_id": "ch10_sq_1-main",
+      "system_id": "ch10_sq_1",
+      "system_ref": "systems/ch10_sq_1/ch10_sq_1.md",
+      "input_ref": "systems/ch10_sq_1/txt/ch10_sq_1.txt"
+    },
+    {
+      "instance_id": "ch6_sq_a-main",
+      "system_id": "ch6_sq_a",
+      "system_ref": "systems/ch6_sq_a/ch6_sq_a.md",
+      "input_ref": "systems/ch6_sq_a/txt/ch6_sq_a.txt"
+    },
+    "chandra-10",
+    "chandra-11",
+    "chandra-12",
+    "chandra-13",
+    "chandra-14",
+    "chandra-15",
+    "chandra-2",
+    "chandra-3",
+    "chandra-4",
+    "chandra-5",
+    "chandra-6",
+    "chandra-7",
+    "chandra-8",
+    "chandra-9",
+    {
+      "instance_id": "cp_d_3_n_6_p_2-main",
+      "system_id": "cp_d_3_n_6_p_2",
+      "system_ref": "systems/cp_d_3_n_6_p_2/cp_d_3_n_6_p_2.md",
+      "input_ref": "systems/cp_d_3_n_6_p_2/txt/cp_d_3_n_6_p_2.txt"
+    },
+    {
+      "instance_id": "cp_d_3_n_6_p_6-main",
+      "system_id": "cp_d_3_n_6_p_6",
+      "system_ref": "systems/cp_d_3_n_6_p_6/cp_d_3_n_6_p_6.md",
+      "input_ref": "systems/cp_d_3_n_6_p_6/txt/cp_d_3_n_6_p_6.txt"
+    },
+    {
+      "instance_id": "crauste-1-main",
+      "system_id": "crauste-1",
+      "system_ref": "systems/crauste-1/crauste-1.md",
+      "input_ref": "systems/crauste-1/txt/crauste-1.txt"
+    },
+    {
+      "instance_id": "crauste-2-main",
+      "system_id": "crauste-2",
+      "system_ref": "systems/crauste-2/crauste-2.md",
+      "input_ref": "systems/crauste-2/txt/crauste-2.txt"
+    },
+    {
+      "instance_id": "crauste-3-main",
+      "system_id": "crauste-3",
+      "system_ref": "systems/crauste-3/crauste-3.md",
+      "input_ref": "systems/crauste-3/txt/crauste-3.txt"
+    },
+    {
+      "instance_id": "crn-main",
+      "system_id": "crn",
+      "system_ref": "systems/crn/crn.md",
+      "input_ref": "systems/crn/txt/crn.txt"
+    },
+    "cyclic-10",
+    "cyclic-11",
+    "cyclic-12",
+    "cyclic-13",
+    "cyclic-14",
+    "cyclic-15",
     "cyclic-2",
     "cyclic-3",
     "cyclic-4",
+    "cyclic-5",
+    "cyclic-6",
+    "cyclic-7",
+    "cyclic-8",
+    "cyclic-9",
+    {
+      "instance_id": "ec12_sq_1-main",
+      "system_id": "ec12_sq_1",
+      "system_ref": "systems/ec12_sq_1/ec12_sq_1.md",
+      "input_ref": "systems/ec12_sq_1/txt/ec12_sq_1.txt"
+    },
+    "eco-10",
+    "eco-11",
+    "eco-12",
+    "eco-13",
+    "eco-14",
+    "eco-15",
     "eco-2",
     "eco-3",
     "eco-4",
+    "eco-5",
+    "eco-6",
+    "eco-7",
+    "eco-8",
+    "eco-9",
+    {
+      "instance_id": "fab_4-main",
+      "system_id": "fab_4",
+      "system_ref": "systems/fab_4/fab_4.md",
+      "input_ref": "systems/fab_4/txt/fab_4.txt"
+    },
+    {
+      "instance_id": "gametwo7-main",
+      "system_id": "gametwo7",
+      "system_ref": "systems/gametwo7/gametwo7.md",
+      "input_ref": "systems/gametwo7/txt/gametwo7.txt"
+    },
+    {
+      "instance_id": "goodwin-main",
+      "system_id": "goodwin",
+      "system_ref": "systems/goodwin/goodwin.md",
+      "input_ref": "systems/goodwin/txt/goodwin.txt"
+    },
+    {
+      "instance_id": "he6_sq_1-main",
+      "system_id": "he6_sq_1",
+      "system_ref": "systems/he6_sq_1/he6_sq_1.md",
+      "input_ref": "systems/he6_sq_1/txt/he6_sq_1.txt"
+    },
+    {
+      "instance_id": "henrion6-main",
+      "system_id": "henrion6",
+      "system_ref": "systems/henrion6/henrion6.md",
+      "input_ref": "systems/henrion6/txt/henrion6.txt"
+    },
+    {
+      "instance_id": "henrion7-main",
+      "system_id": "henrion7",
+      "system_ref": "systems/henrion7/henrion7.md",
+      "input_ref": "systems/henrion7/txt/henrion7.txt"
+    },
+    {
+      "instance_id": "hexapod-main",
+      "system_id": "hexapod",
+      "system_ref": "systems/hexapod/hexapod.md",
+      "input_ref": "systems/hexapod/txt/hexapod.txt"
+    },
+    {
+      "instance_id": "ka11_sq_1-main",
+      "system_id": "ka11_sq_1",
+      "system_ref": "systems/ka11_sq_1/ka11_sq_1.md",
+      "input_ref": "systems/ka11_sq_1/txt/ka11_sq_1.txt"
+    },
+    {
+      "instance_id": "ka6_sq_a-main",
+      "system_id": "ka6_sq_a",
+      "system_ref": "systems/ka6_sq_a/ka6_sq_a.md",
+      "input_ref": "systems/ka6_sq_a/txt/ka6_sq_a.txt"
+    },
+    "katsura-10",
+    "katsura-11",
+    "katsura-12",
+    "katsura-13",
+    "katsura-14",
+    "katsura-15",
+    "katsura-2",
+    "katsura-3",
+    "katsura-4",
+    "katsura-5",
+    "katsura-6",
+    "katsura-7",
+    "katsura-8",
+    "katsura-9",
+    {
+      "instance_id": "no5_sq_a-main",
+      "system_id": "no5_sq_a",
+      "system_ref": "systems/no5_sq_a/no5_sq_a.md",
+      "input_ref": "systems/no5_sq_a/txt/no5_sq_a.txt"
+    },
+    {
+      "instance_id": "no6_sq_1-main",
+      "system_id": "no6_sq_1",
+      "system_ref": "systems/no6_sq_1/no6_sq_1.md",
+      "input_ref": "systems/no6_sq_1/txt/no6_sq_1.txt"
+    },
+    "noon-10",
+    "noon-11",
+    "noon-12",
+    "noon-13",
+    "noon-14",
+    "noon-15",
     "noon-2",
     "noon-3",
-    "noon-4"
+    "noon-4",
+    "noon-5",
+    "noon-6",
+    "noon-7",
+    "noon-8",
+    "noon-9",
+    {
+      "instance_id": "rand_3_2-main",
+      "system_id": "rand_3_2",
+      "system_ref": "systems/rand_3_2/rand_3_2.md",
+      "input_ref": "systems/rand_3_2/txt/rand_3_2.txt"
+    },
+    {
+      "instance_id": "rand_3_3-main",
+      "system_id": "rand_3_3",
+      "system_ref": "systems/rand_3_3/rand_3_3.md",
+      "input_ref": "systems/rand_3_3/txt/rand_3_3.txt"
+    },
+    {
+      "instance_id": "re5_sq_a-main",
+      "system_id": "re5_sq_a",
+      "system_ref": "systems/re5_sq_a/re5_sq_a.md",
+      "input_ref": "systems/re5_sq_a/txt/re5_sq_a.txt"
+    },
+    {
+      "instance_id": "re6_sq_1-main",
+      "system_id": "re6_sq_1",
+      "system_ref": "systems/re6_sq_1/re6_sq_1.md",
+      "input_ref": "systems/re6_sq_1/txt/re6_sq_1.txt"
+    },
+    {
+      "instance_id": "reimer6-main",
+      "system_id": "reimer6",
+      "system_ref": "systems/reimer6/reimer6.md",
+      "input_ref": "systems/reimer6/txt/reimer6.txt"
+    },
+    {
+      "instance_id": "reimer7-main",
+      "system_id": "reimer7",
+      "system_ref": "systems/reimer7/reimer7.md",
+      "input_ref": "systems/reimer7/txt/reimer7.txt"
+    },
+    {
+      "instance_id": "ro5_sq_a-main",
+      "system_id": "ro5_sq_a",
+      "system_ref": "systems/ro5_sq_a/ro5_sq_a.md",
+      "input_ref": "systems/ro5_sq_a/txt/ro5_sq_a.txt"
+    },
+    {
+      "instance_id": "ro6_sq_1-main",
+      "system_id": "ro6_sq_1",
+      "system_ref": "systems/ro6_sq_1/ro6_sq_1.md",
+      "input_ref": "systems/ro6_sq_1/txt/ro6_sq_1.txt"
+    },
+    {
+      "instance_id": "robot-main",
+      "system_id": "robot",
+      "system_ref": "systems/robot/robot.md",
+      "input_ref": "systems/robot/txt/robot.txt"
+    },
+    {
+      "instance_id": "root7-main",
+      "system_id": "root7",
+      "system_ref": "systems/root7/root7.md",
+      "input_ref": "systems/root7/txt/root7.txt"
+    },
+    {
+      "instance_id": "schwarz11-main",
+      "system_id": "schwarz11",
+      "system_ref": "systems/schwarz11/schwarz11.md",
+      "input_ref": "systems/schwarz11/txt/schwarz11.txt"
+    },
+    {
+      "instance_id": "seir36-main",
+      "system_id": "seir36",
+      "system_ref": "systems/seir36/seir36.md",
+      "input_ref": "systems/seir36/txt/seir36.txt"
+    }
   ],
   "software": [
     {

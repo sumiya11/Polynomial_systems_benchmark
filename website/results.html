@@ -2,31 +2,14 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {{COMMON_HEAD}}
   <title>Benchmark results</title>
-  <link href="./resources/css/index.css" type="text/css" rel="stylesheet">
   <link href="./resources/css/results.css" type="text/css" rel="stylesheet">
 </head>
 
 <body>
 
-<h1>Polynomial systems benchmark</h1>
-
-<div class="navbar" id="myNavbar">
-    <a href="about.html">About</a>
-    <a href="index.html">Systems</a>
-    <a href="results.html">Results</a>
-    <a href="contribute.html">Contribute</a>
-    <a href="logs.html">Logs</a>
-    <a href="https://github.com/sumiya11/GroebnerBenchmark">GitHub</a>
-
-    <a href="javascript:void(0);"
-       class="icon"
-       onclick="toggleMenu()">
-      &#9776;
-    </a>
-  </div>
+{{SITE_HEADER}}
 
 <div class="page-shell">
   <div class="displayed-experiment-bar">
@@ -40,6 +23,9 @@
     <div class="overview-main">
       <div class="overview-visual">
         <div id="profileFigure" class="profile-figure">Loading profile...</div>
+        <p class="profile-note">
+          <a href="https://arxiv.org/abs/cs/0102001">On performance profiles: arXiv:cs/0102001</a>
+        </p>
       </div>
       <div class="side-panel overview-sidebar">
         <div class="sidebar-section">
@@ -52,6 +38,10 @@
             <li class="info-row">
               <span class="info-label">Uploaded by</span>
               <a class="list-link" id="currentExperimentUploader" href="https://github.com/sumiya11">github.com/sumiya11</a>
+            </li>
+            <li class="info-row" id="currentExperimentSourceRow" hidden>
+              <span class="info-label">Files</span>
+              <a class="list-link" id="currentExperimentSource" href="https://github.com/sumiya11/GroebnerBenchmark">on github</a>
             </li>
           </ul>
         </div>
@@ -156,6 +146,7 @@ python bench/benchmark.py test</pre>
             <th>Status</th>
             <th>Measured time (s)</th>
             <th>Process time (s)</th>
+            <th>Peak memory</th>
             <th>System</th>
             <th>Input</th>
             <th>Log</th>
@@ -163,7 +154,7 @@ python bench/benchmark.py test</pre>
         </thead>
         <tbody>
           <tr>
-            <td colspan="10">Loading results...</td>
+            <td colspan="11">Loading results...</td>
           </tr>
         </tbody>
       </table>
@@ -176,6 +167,7 @@ python bench/benchmark.py test</pre>
 <script id="embeddedTrackSummaries" type="application/json">{}</script>
 <script id="embeddedTrackProfiles" type="application/json">{}</script>
 <script id="embeddedDefaultExperimentId" type="application/json">""</script>
+{{SITE_SCRIPTS}}
 <script src="./resources/js/results.js"></script>
 
 </body>

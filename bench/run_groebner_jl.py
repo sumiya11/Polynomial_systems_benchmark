@@ -129,9 +129,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run Groebner.jl across one named experiment directory.")
     parser.add_argument("experiment", nargs="?", default="test", help="Experiment directory under bench/ to use.")
     parser.add_argument("--timeout-s", type=float, help="Override the timeout for each single run.")
-    parser.add_argument("--bootstrap", dest="bootstrap", action="store_true", help="Force Julia dependency bootstrapping before the run.")
-    parser.add_argument("--no-bootstrap", dest="bootstrap", action="store_false", help="Skip Julia dependency bootstrapping.")
-    parser.set_defaults(bootstrap=None)
+    parser.add_argument("--memory-limit-gb", type=float, help="Override the memory limit for each single run in gigabytes.")
     return parser
 
 
@@ -139,7 +137,12 @@ def main(argv: list[str] | None = None) -> int:
     import benchmark
 
     args = build_parser().parse_args(argv)
-    return benchmark.run_named_runner("groebner_jl", args.experiment, args.timeout_s, args.bootstrap)
+    return benchmark.run_named_runner(
+        "groebner_jl",
+        args.experiment,
+        timeout_override=args.timeout_s,
+        memory_limit_mb_override=benchmark.memory_limit_mb_from_gb(args.memory_limit_gb),
+    )
 
 
 if __name__ == "__main__":

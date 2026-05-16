@@ -74,17 +74,20 @@
 
 .section-block {
   margin-top: 22px;
+  border: 1px solid rgb(216, 210, 196);
+  padding: 12px 14px 14px 14px;
 }
 
 .section-heading {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 12px;
   flex-wrap: wrap;
 }
 
 .section-block h2 {
+  font-size: 1.17em;
   margin-bottom: 8px;
 }
 
@@ -142,7 +145,7 @@
 }
 
 .profile-figure {
-  width: min(100%, 860px);
+  width: min(100%, 1040px);
   margin: 0;
   background: transparent;
 }
@@ -153,32 +156,87 @@
   display: block;
 }
 
-.summary-table,
-.results-table,
-.proposal-table {
+.profile-note {
+  margin: 8px 0 0 2px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: #6b655a;
+}
+
+.interactive-profile-svg .profile-series,
+.interactive-profile-svg .profile-legend-entry {
+  transition: opacity 120ms ease;
+}
+
+.interactive-profile-svg .profile-series {
+  cursor: pointer;
+}
+
+.interactive-profile-svg .profile-series-hitbox {
+  pointer-events: stroke;
+}
+
+.interactive-profile-svg .profile-series-line,
+.interactive-profile-svg .profile-legend-line,
+.interactive-profile-svg .profile-legend-label {
+  transition: opacity 120ms ease, stroke-width 120ms ease, font-weight 120ms ease;
+}
+
+.interactive-profile-svg .profile-series.is-muted,
+.interactive-profile-svg .profile-legend-entry.is-muted {
+  opacity: 0.24;
+}
+
+.interactive-profile-svg .profile-series.is-active .profile-series-line {
+  stroke-width: 4.5;
+}
+
+.interactive-profile-svg .profile-legend-entry {
+  cursor: pointer;
+}
+
+.interactive-profile-svg .profile-legend-entry.is-active .profile-legend-line {
+  stroke-width: 5.5;
+}
+
+.interactive-profile-svg .profile-legend-entry.is-active .profile-legend-label {
+  font-weight: 700;
+}
+
+.interactive-profile-svg .profile-series:focus,
+.interactive-profile-svg .profile-legend-entry:focus {
+  outline: none;
+}
+
+.page-shell a,
+.page-shell a:visited {
+  color: #005f99;
+  text-decoration: none;
+}
+
+.page-shell a:hover,
+.page-shell a:focus-visible {
+  color: #00436d;
+  text-decoration: none;
+}
+
+.results-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.summary-table th,
-.summary-table td,
 .results-table th,
-.results-table td,
-.proposal-table th,
-.proposal-table td {
+.results-table td {
   border: 1px solid #ddd4bf;
   padding: 7px 9px;
   vertical-align: top;
   text-align: left;
 }
 
-.summary-table th,
-.results-table th,
-.proposal-table th {
+.results-table th {
   background: #eef6f0;
 }
 
-.track-toolbar,
 .results-controls {
   display: flex;
   flex-wrap: wrap;
@@ -186,7 +244,6 @@
   margin: 8px 0 12px 0;
 }
 
-.track-toolbar label,
 .results-controls label {
   display: flex;
   flex-direction: column;
@@ -195,7 +252,6 @@
   min-width: 180px;
 }
 
-.track-toolbar select,
 .results-controls select,
 .results-controls input {
   padding: 6px 8px;
@@ -219,14 +275,13 @@
 
 .section-action,
 .instance-link {
-  color: #2c2a24;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  color: #005f99;
+  text-decoration: none;
 }
 
 .section-action:hover,
 .instance-link:hover {
-  color: SeaGreen;
+  color: #00436d;
 }
 
 .status-ok {
@@ -240,26 +295,12 @@
   font-weight: 600;
 }
 
-.artifact-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 14px;
-  margin-top: 16px;
-}
-
-.artifact-card {
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 1px solid #ddd4bf;
-  background: #f8f5ec;
-}
-
 .codeblock {
   white-space: pre-wrap;
-  background: #faf7ef;
-  border: 1px solid #ddd4bf;
+  background: transparent;
+  border: 0;
   border-radius: 0;
-  padding: 10px 12px;
+  padding: 0;
   overflow-x: auto;
 }
 
@@ -324,33 +365,11 @@
   margin-top: 8px;
 }
 
-.callout {
-  margin-top: 16px;
-  padding: 14px 16px;
-  border-radius: 10px;
-  background: #f4efe2;
-  border: 1px solid #ddd4bf;
-}
-
-.command-callout {
-  margin-top: 14px;
-}
-
-.command-callout p {
-  margin-bottom: 0;
-}
-
-.inline-command {
-  margin: 0;
-  padding: 10px 12px;
-}
-
 .list-link {
-  color: #2c2a24;
+  color: #005f99;
   font-weight: 400;
   word-break: break-word;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
 }
 
 @media screen and (max-width: 900px) {

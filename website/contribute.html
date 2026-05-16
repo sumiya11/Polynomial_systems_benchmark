@@ -2,48 +2,18 @@
 <html>
 
 <head>
-    <link href="./resources/css/index.css" type="text/css" rel="stylesheet">
-<style>
-<meta charset="UTF-8">
-    <meta name="viewport" 
-          content="width=device-width,
-                   initial-scale=1.0">
-    <title>Responsive Navbar</title>
-    <link rel="stylesheet" type="text/css" 
-          href="index.css">
-</style>
-  <title></title>
+  {{COMMON_HEAD}}
+  <title>Contribute</title>
 </head>
 
 <body>
 
-<h1>Polynomial systems benchmark</h1>
-
-<div class="navbar" id="myNavbar">
-        <a href="about.html">About</a>
-        <a href="index.html">Systems</a>
-    <a href="results.html">Results</a>
-        <a href="contribute.html">Contribute</a>
-        <a href="logs.html">Logs</a>
-        <a href="https://github.com/sumiya11/GroebnerBenchmark">GitHub</a>
-
-        <a href="javascript:void(0);"
-           class="icon"
-           onclick="toggleMenu()">
-            &#9776;
-        </a>
-    </div>
-
-<script>
-    function toggleMenu() {
-        let navbar = document.getElementById("myNavbar");
-        navbar.className = navbar.className === "navbar" ?
-                            "navbar responsive" : "navbar";
-    }
-</script>
+{{SITE_HEADER}}
 
 <div class="container">
 <p>If you would like to add a system to this repository, please contact a maintainer, or open an issue or PR on <a href="https://github.com/sumiya11/GroebnerBenchmark">GitHub</a>. Thank you!</p>
 </div>
+
+{{SITE_SCRIPTS}}
 
 </body>

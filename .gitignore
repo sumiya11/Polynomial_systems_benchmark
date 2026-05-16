@@ -4,3 +4,4 @@ axgrob/
 venv/
 .venv/
 __pycache__/
+RationalUnivariateRepresentation.jl/

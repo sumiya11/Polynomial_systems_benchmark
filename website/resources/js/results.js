@@ -1,8 +1,3 @@
-function toggleMenu() {
-  const navbar = document.getElementById("myNavbar");
-  navbar.className = navbar.className === "navbar" ? "navbar responsive" : "navbar";
-}
-
 const pageState = {
   rowsByTrack: {},
   summariesByTrack: {},
@@ -45,6 +40,7 @@ function parseEmbeddedJson(id) {
 const EMBEDDED_EXPERIMENTS = Array.isArray(parseEmbeddedJson("embeddedExperiments")) ? parseEmbeddedJson("embeddedExperiments") : [];
 const EXPERIMENTS_BY_ID = Object.fromEntries(EMBEDDED_EXPERIMENTS.map((experiment) => [experiment.experiment_id, experiment]));
 const DEFAULT_EXPERIMENT_ID = parseEmbeddedJson("embeddedDefaultExperimentId") || "";
+const GITHUB_REPO_BASE = "https://github.com/sumiya11/GroebnerBenchmark";
 
 function uniqueValues(rows, key) {
   return [...new Set(rows.map((row) => row[key]).filter(Boolean))].sort();
@@ -78,6 +74,17 @@ function formatSeconds(value) {
     return number.toFixed(4);
   }
   return number.toFixed(3);
+}
+
+function formatMemoryMb(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) {
+    return value || "-";
+  }
+  if (number >= 1024) {
+    return `${(number / 1024).toFixed(2)} GB`;
+  }
+  return `${number.toFixed(0)} MB`;
 }
 
 function currentExperiment(trackName = pageState.currentTrack) {
@@ -184,6 +191,24 @@ function formatUtcTimestamp(value) {
   const hours = String(date.getUTCHours()).padStart(2, "0");
   const minutes = String(date.getUTCMinutes()).padStart(2, "0");
   return `${year}-${month}-${day} ${hours}:${minutes} UTC`;
+}
+
+function githubExperimentUrl(definitionPath) {
+  const normalized = String(definitionPath || "")
+    .trim()
+    .replace(/^\.\//, "")
+    .replace(/\\/g, "/")
+    .replace(/^\/+/, "");
+  if (!normalized) {
+    return "";
+  }
+
+  const slashIndex = normalized.lastIndexOf("/");
+  const directory = slashIndex >= 0 ? normalized.slice(0, slashIndex) : normalized;
+  if (!directory) {
+    return GITHUB_REPO_BASE;
+  }
+  return `${GITHUB_REPO_BASE}/tree/master/${encodeURI(directory)}`;
 }
 
 function populateFilters(rows) {
@@ -328,6 +353,7 @@ function renderResultsTable(rows) {
         <td class="${statusClass}">${row.status}</td>
         <td>${formatSeconds(row.wall_time_seconds)}</td>
         <td>${formatSeconds(row.process_wall_time_seconds)}</td>
+        <td>${formatMemoryMb(row.peak_memory_mb)}</td>
         <td>${systemHref ? `<a href="${systemHref}">${row.system_id}</a>` : row.system_id}</td>
         <td><a href="./${row.input_ref}">${row.input_ref}</a></td>
         <td><a href="./${row.log_ref}">log</a></td>
@@ -346,10 +372,53 @@ function renderProfileSvg(trackName) {
   }
 
   mount.innerHTML = svgText;
+  enhanceProfileSvg(mount);
+}
+
+function setActiveProfile(profileFigure, profileName) {
+  const series = profileFigure.querySelectorAll(".profile-series");
+  const legends = profileFigure.querySelectorAll(".profile-legend-entry");
+  const hasActive = Boolean(profileName);
+
+  series.forEach((element) => {
+    const isActive = hasActive && element.dataset.profile === profileName;
+    element.classList.toggle("is-active", isActive);
+    element.classList.toggle("is-muted", hasActive && !isActive);
+  });
+
+  legends.forEach((element) => {
+    const isActive = hasActive && element.dataset.profile === profileName;
+    element.classList.toggle("is-active", isActive);
+    element.classList.toggle("is-muted", hasActive && !isActive);
+  });
+}
+
+function bindProfileHover(element, profileFigure) {
+  const activate = () => setActiveProfile(profileFigure, element.dataset.profile || "");
+  const clear = () => setActiveProfile(profileFigure, "");
+
+  element.addEventListener("mouseenter", activate);
+  element.addEventListener("mouseleave", clear);
+  element.addEventListener("focus", activate);
+  element.addEventListener("blur", clear);
+  element.addEventListener("click", activate);
+}
+
+function enhanceProfileSvg(mount) {
+  const profileFigure = mount.querySelector("svg");
+  if (!profileFigure) {
+    return;
+  }
+
+  profileFigure.querySelectorAll(".profile-series, .profile-legend-entry").forEach((element) => {
+    bindProfileHover(element, profileFigure);
+  });
 }
 
 function renderCurrentTrackArtifacts(trackName, rows) {
   const info = currentExperiment(trackName);
+  const sourceRow = document.getElementById("currentExperimentSourceRow");
+  const sourceLink = document.getElementById("currentExperimentSource");
   if (!info) {
     document.getElementById("currentExperimentDate").textContent = "";
     document.getElementById("currentExperimentSoftwareSummary").textContent = "";
@@ -359,6 +428,13 @@ function renderCurrentTrackArtifacts(trackName, rows) {
     document.getElementById("currentExperimentOs").textContent = "";
     document.getElementById("currentExperimentCpu").textContent = "";
     document.getElementById("currentExperimentFlags").textContent = "";
+    if (sourceRow) {
+      sourceRow.hidden = true;
+    }
+    if (sourceLink) {
+      sourceLink.removeAttribute("href");
+      sourceLink.textContent = "";
+    }
     document.getElementById("reproduceCommand").textContent = "";
     const downloadLink = document.getElementById("downloadTimingsCsv");
     if (downloadLink) {
@@ -378,6 +454,7 @@ function renderCurrentTrackArtifacts(trackName, rows) {
   const machines = [...new Set(rows.map((row) => (row.runner_machine || "").trim()).filter(Boolean))].sort();
   const date = formatUtcTimestamp(latestExperimentTimestamp(rows));
   const replayCommand = info.replay_command || `python bench/benchmark.py ${trackName}`;
+  const experimentSourceUrl = githubExperimentUrl(info.definition_path);
   const osText = osValues[0] || hardwareFallback.os;
   const processorText = processors.join(", ");
   const cpuCountText = cpuCounts.length === 1 ? cpuCounts[0] : cpuCounts.join(", ");
@@ -405,6 +482,17 @@ function renderCurrentTrackArtifacts(trackName, rows) {
   document.getElementById("currentExperimentOs").textContent = osLine;
   document.getElementById("currentExperimentCpu").textContent = `${cpuLine}${wordSizeText ? `, WORD_SIZE ${wordSizeText}` : ""}`;
   document.getElementById("currentExperimentFlags").textContent = "Not recorded";
+  if (sourceRow && sourceLink) {
+    if (experimentSourceUrl) {
+      sourceRow.hidden = false;
+      sourceLink.href = experimentSourceUrl;
+      sourceLink.textContent = "on github";
+    } else {
+      sourceRow.hidden = true;
+      sourceLink.removeAttribute("href");
+      sourceLink.textContent = "";
+    }
+  }
 
   document.getElementById("reproduceCommand").textContent = [
     "git clone https://github.com/sumiya11/GroebnerBenchmark.git",

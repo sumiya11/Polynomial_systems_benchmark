@@ -26,8 +26,11 @@ ranges = Dict(
 function generate_many_txt()
     prefix = (@__DIR__) * "/../systems"
     for dir in readdir(prefix)
+        root = prefix * "/" * dir
+        if !isdir(root)
+            continue
+        end
         for file in readdir(prefix * "/" * dir)
-            root = prefix * "/" * dir
             if endswith(file, ".txt")
                 # rm(root * "/txt/" * file, recursive=true)
             end
@@ -49,11 +52,11 @@ function generate_many_txt()
                 for n in range
                     sys = nothing
                     try
-                        sys = func()
+                        sys = Base.invokelatest(func)
                     catch e
                         if isa(e, MethodError)
                             try
-                                sys = func(n)
+                                sys = Base.invokelatest(func, n)
                                 needs_n = true
                             catch e
                                 @warn "Failed to call $filepath with n=$n: $e"
@@ -85,4 +88,6 @@ function generate_many_txt()
     end
 end
 
-generate_many_txt()
+if abspath(PROGRAM_FILE) == @__FILE__
+    generate_many_txt()
+end

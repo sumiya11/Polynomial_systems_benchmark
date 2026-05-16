@@ -51,56 +51,64 @@ EXPERIMENT_INDEX_COLUMNS = [
     "replay_command",
     "hardware_summary",
 ]
+COMMON_HEAD_PLACEHOLDER = "{{COMMON_HEAD}}"
+SITE_HEADER_PLACEHOLDER = "{{SITE_HEADER}}"
+SITE_SCRIPTS_PLACEHOLDER = "{{SITE_SCRIPTS}}"
+COMMON_HEAD_HTML = """  <meta charset=\"UTF-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+  <link href=\"./resources/css/index.css\" type=\"text/css\" rel=\"stylesheet\">"""
+SITE_HEADER_HTML = """<h1>Polynomial systems benchmark</h1>
 
-HTML_TEMPLATE = """
+<div class=\"navbar\" id=\"myNavbar\">
+    <a href=\"about.html\">About</a>
+    <a href=\"index.html\">Systems</a>
+    <a href=\"results.html\">Results</a>
+    <a href=\"contribute.html\">Contribute</a>
+    <a href=\"logs.html\">Logs</a>
+    <a href=\"https://github.com/sumiya11/GroebnerBenchmark\">GitHub</a>
+
+    <a href=\"javascript:void(0);\"
+       class=\"icon\"
+       onclick=\"toggleMenu()\">
+      &#9776;
+    </a>
+  </div>"""
+SITE_SCRIPTS_HTML = '  <script src="./resources/js/site.js"></script>'
+
+HTML_TEMPLATE = f"""
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link href="./resources/css/index.css" type="text/css" rel="stylesheet">
-<style>
- <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Navbar</title>
-    <link rel="stylesheet" type="text/css"
-          href="index.css">
-</style>
-  <title></title>
+{COMMON_HEAD_PLACEHOLDER}
+  <title>Polynomial systems benchmark</title>
 </head>
 
 <body>
 
-<h1>Polynomial systems benchmark</h1>
-
-<div class="navbar" id="myNavbar">
-        <a href="about.html">About</a>
-    <a href="index.html">Systems</a>
-    <a href="results.html">Results</a>
-        <a href="contribute.html">Contribute</a>
-        <a href="logs.html">Logs</a>
-        <a href="https://github.com/sumiya11/GroebnerBenchmark">GitHub</a>
-
-        <a href="javascript:void(0);"
-           class="icon"
-           onclick="toggleMenu()">
-            &#9776;
-        </a>
-    </div>
-
-<script>
-    function toggleMenu() {
-        let navbar = document.getElementById("myNavbar");
-        navbar.className = navbar.className === "navbar" ?
-                            "navbar responsive" : "navbar";
-    }
-</script>
+{SITE_HEADER_PLACEHOLDER}
 
 <@ @>
+
+{SITE_SCRIPTS_PLACEHOLDER}
 
 </body>
 </html>
 """
+
+
+def render_shared_page_fragments(text: str) -> str:
+    return (
+        text.replace(COMMON_HEAD_PLACEHOLDER, COMMON_HEAD_HTML)
+        .replace(SITE_HEADER_PLACEHOLDER, SITE_HEADER_HTML)
+        .replace(SITE_SCRIPTS_PLACEHOLDER, SITE_SCRIPTS_HTML)
+    )
+
+
+def render_static_pages(build_dir: Path) -> None:
+    for html_path in build_dir.glob("*.html"):
+        html_path.write_text(render_shared_page_fragments(html_path.read_text(encoding="utf-8")), encoding="utf-8")
 
 
 def ensure_markdown() -> None:
@@ -134,11 +142,32 @@ def read_systems_data(systems_dir: Path) -> dict[str, dict[str, str]]:
     return systems
 
 
+def trim_system_markdown(text: str) -> str:
+    lines = text.splitlines()
+    heading = next((line for line in lines if line.startswith("### ")), None)
+    keywords = next((line for line in lines if line.startswith("- Keywords:")), None)
+    try:
+        sources_start = lines.index("- Sources:")
+    except ValueError:
+        sources_start = None
+
+    if heading is None or keywords is None or sources_start is None:
+        return text
+
+    source_lines = ["- Sources:"]
+    for line in lines[sources_start + 1 :]:
+        if line.startswith("- ") and not line.startswith("    - "):
+            break
+        source_lines.append(line)
+
+    return "\n".join([heading, "", keywords, *source_lines, ""])
+
+
 def populate_html(systems: dict[str, dict[str, str]]) -> str:
     print("Populating index.html")
     body = "<hr>"
     for system in sorted(systems):
-        content = markdown.markdown(systems[system]["content"])
+        content = markdown.markdown(trim_system_markdown(systems[system]["content"]))
         content = re.sub(
             "<h3>(.+)</h3>",
             f'<h3 id="{system}"><a href="#{system}" style="color: black">\\g<1></a></h3>',
@@ -188,6 +217,22 @@ def fallback_experiment_metadata(experiment_id: str) -> dict[str, object]:
     }
     defaults.update(FALLBACK_EXPERIMENTS.get(experiment_id, {}))
     return defaults
+
+
+def load_experiment_bundle_metadata(experiment_bundle_path: Path) -> dict[str, str]:
+    if not experiment_bundle_path.is_file():
+        return {}
+
+    metadata: dict[str, str] = {}
+    for line in experiment_bundle_path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if stripped == "[runs]":
+            break
+        if not stripped or ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        metadata[key.strip()] = value.strip()
+    return metadata
 
 
 def compact_row_values(rows: list[dict[str, str]], key: str) -> str:
@@ -266,6 +311,10 @@ def svg_escape(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
+def estimated_svg_text_width(text: str, font_size: float = 16.0) -> float:
+    return max(0.0, len(text) * font_size * 0.58)
+
+
 def render_profile_svg(
     taus: list[float],
     series: dict[str, list[tuple[float, float]]],
@@ -274,12 +323,15 @@ def render_profile_svg(
 ) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    width = 860
+    legend_labels = sorted(series)
+    legend_label_width = max((estimated_svg_text_width(label) for label in legend_labels), default=0.0)
+    legend_gap = 64
+    right = max(240, int(math.ceil(legend_gap + legend_label_width + 28)))
+    plot_width = 536
+    width = 84 + plot_width + right
     height = 460
     left = 84
-    right = 240
     top = 24
-    plot_width = width - left - right
     plot_height = height - top - 68
 
     if not series:
@@ -287,8 +339,7 @@ def render_profile_svg(
             f"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {width} {height}\" role=\"img\" aria-labelledby=\"title desc\">\n"
             f"  <title id=\"title\">Performance profile</title>\n"
             f"  <desc id=\"desc\">No successful runs were available.</desc>\n"
-            f"  <rect width=\"100%\" height=\"100%\" fill=\"#fcfbf7\"/>\n"
-            f"  <text x=\"{width / 2}\" y=\"{height / 2}\" text-anchor=\"middle\" font-family=\"Helvetica, Arial, sans-serif\" font-size=\"18\" fill=\"#444\">No successful runs available</text>\n"
+            f"  <text x=\"{width / 2}\" y=\"{height / 2}\" text-anchor=\"middle\" font-family=\"Helvetica, Arial, sans-serif\" font-size=\"20\" fill=\"#444\">No successful runs available</text>\n"
             f"</svg>\n",
             encoding="utf-8",
         )
@@ -309,14 +360,17 @@ def render_profile_svg(
     for y_tick in [0.0, 0.25, 0.5, 0.75, 1.0]:
         y = y_coord(y_tick)
         grid_lines.append(f'<line x1="{left}" y1="{y:.1f}" x2="{left + plot_width}" y2="{y:.1f}" stroke="#d8d2c4" stroke-width="1"/>')
-        grid_lines.append(f'<text x="{left - 12}" y="{y + 5:.1f}" text-anchor="end" font-size="13" fill="#444">{y_tick:.2f}</text>')
+        grid_lines.append(f'<text x="{left - 12}" y="{y + 5:.1f}" text-anchor="end" font-size="15" fill="#444">{y_tick:.2f}</text>')
 
+    previous_x_label = float("-inf")
     for tick in [1.0, 1.25, 1.5, 2.0, 3.0]:
         if tick > max_tau:
             continue
         x = x_coord(tick)
         grid_lines.append(f'<line x1="{x:.1f}" y1="{top}" x2="{x:.1f}" y2="{top + plot_height}" stroke="#ece6da" stroke-width="1"/>')
-        grid_lines.append(f'<text x="{x:.1f}" y="{top + plot_height + 26}" text-anchor="middle" font-size="13" fill="#444">{tick:g}</text>')
+        if x - previous_x_label >= 36:
+            grid_lines.append(f'<text x="{x:.1f}" y="{top + plot_height + 28}" text-anchor="middle" font-size="15" fill="#444">{tick:g}</text>')
+            previous_x_label = x
 
     paths = []
     legend = []
@@ -325,34 +379,37 @@ def render_profile_svg(
         software = software_by_profile.get(profile, profile)
         profile_attr = svg_escape(profile)
         software_attr = svg_escape(software)
+        tooltip = svg_escape(f"{profile} | {software}")
         path_commands = []
         for point_index, (tau, value) in enumerate(series[profile]):
             command = "M" if point_index == 0 else "L"
             path_commands.append(f"{command} {x_coord(tau):.2f} {y_coord(value):.2f}")
         paths.append(
-            f'<g class="profile-series" data-profile="{profile_attr}" data-software="{software_attr}">'
-            f'<path d="{" ".join(path_commands)}" fill="none" stroke="{color}" stroke-width="3"/>'
+            f'<g class="profile-series" data-profile="{profile_attr}" data-software="{software_attr}" tabindex="0">'
+            f"<title>{tooltip}</title>"
+            f'<path class="profile-series-hitbox" d="{" ".join(path_commands)}" fill="none" stroke="transparent" stroke-width="14"/>'
+            f'<path class="profile-series-line" d="{" ".join(path_commands)}" fill="none" stroke="{color}" stroke-width="3"/>'
             f"</g>"
         )
-        legend_y = top + 22 + index * 30
+        legend_y = top + 24 + index * 32
         legend.append(
-            f'<g class="profile-legend-entry" data-profile="{profile_attr}" data-software="{software_attr}">'
-            f'<line x1="{left + plot_width + 24}" y1="{legend_y:.1f}" x2="{left + plot_width + 54}" y2="{legend_y:.1f}" stroke="{color}" stroke-width="4"/>'
-            f'<text x="{left + plot_width + 64}" y="{legend_y + 5:.1f}" font-size="14" fill="#222">{svg_escape(profile)}</text>'
+            f'<g class="profile-legend-entry" data-profile="{profile_attr}" data-software="{software_attr}" tabindex="0">'
+            f"<title>{tooltip}</title>"
+            f'<line class="profile-legend-line" x1="{left + plot_width + 24}" y1="{legend_y:.1f}" x2="{left + plot_width + 54}" y2="{legend_y:.1f}" stroke="{color}" stroke-width="4"/>'
+            f'<text class="profile-legend-label" x="{left + plot_width + 64}" y="{legend_y + 6:.1f}" font-size="16" fill="#222">{svg_escape(profile)}</text>'
             f"</g>"
         )
 
     output_path.write_text(
-        f"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {width} {height}\" role=\"img\" aria-labelledby=\"title desc\">\n"
+        f"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {width} {height}\" role=\"img\" aria-labelledby=\"title desc\" class=\"interactive-profile-svg\">\n"
         f"  <title id=\"title\">Performance profile</title>\n"
         f"  <desc id=\"desc\">Fraction of problems solved within a factor tau of the best runtime.</desc>\n"
-        f"  <rect width=\"100%\" height=\"100%\" fill=\"#fcfbf7\"/>\n"
-        f"  <rect x=\"{left}\" y=\"{top}\" width=\"{plot_width}\" height=\"{plot_height}\" fill=\"#fffef9\" stroke=\"#b7ae98\" stroke-width=\"1.5\"/>\n"
+        f"  <rect x=\"{left}\" y=\"{top}\" width=\"{plot_width}\" height=\"{plot_height}\" fill=\"none\" stroke=\"#b7ae98\" stroke-width=\"1.5\"/>\n"
         f"  {''.join(grid_lines)}\n"
         f"  {''.join(paths)}\n"
         f"  {''.join(legend)}\n"
-        f"  <text x=\"{left + plot_width / 2}\" y=\"{height - 14}\" text-anchor=\"middle\" font-size=\"14\" fill=\"#333\">tau = runtime / best-runtime-on-case</text>\n"
-        f"  <text x=\"26\" y=\"{top + plot_height / 2}\" text-anchor=\"middle\" transform=\"rotate(-90 26 {top + plot_height / 2})\" font-size=\"14\" fill=\"#333\">fraction of cases</text>\n"
+        f"  <text x=\"{left + plot_width / 2}\" y=\"{height - 12}\" text-anchor=\"middle\" font-size=\"16\" fill=\"#333\">tau = runtime / best-runtime-on-case</text>\n"
+        f"  <text x=\"26\" y=\"{top + plot_height / 2}\" text-anchor=\"middle\" transform=\"rotate(-90 26 {top + plot_height / 2})\" font-size=\"16\" fill=\"#333\">fraction of cases</text>\n"
         f"</svg>\n",
         encoding="utf-8",
     )
@@ -410,6 +467,8 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
             continue
 
         fallback = fallback_experiment_metadata(experiment_id)
+        experiment_bundle = row.get("experiment_bundle", "").strip() or f"results/{experiment_id}/experiment.txt"
+        bundle_metadata = load_experiment_bundle_metadata(build_root / experiment_bundle)
 
         results_table = row.get("results_table", "").strip() or f"results/{experiment_id}/runs.tsv"
         results_path = build_root / Path(results_table)
@@ -425,14 +484,14 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
         experiments.append(
             {
                 "experiment_id": experiment_id,
-                "label": row.get("label", "").strip() or str(fallback["label"]),
+                "label": row.get("label", "").strip() or bundle_metadata.get("label", "").strip() or str(fallback["label"]),
                 "is_default": truthy(row.get("is_default", "")) if row.get("is_default", "").strip() else bool(fallback["is_default"]),
                 "sort_order": safe_int(row.get("sort_order", ""), int(fallback["sort_order"])),
-                "definition_path": row.get("definition_path", "").strip() or str(fallback["definition_path"]),
+                "definition_path": row.get("definition_path", "").strip() or bundle_metadata.get("definition_path", "").strip() or str(fallback["definition_path"]),
                 "results_table": results_table,
-                "experiment_bundle": row.get("experiment_bundle", "").strip() or f"results/{experiment_id}/experiment.txt",
-                "logs_dir": row.get("logs_dir", "").strip() or f"results/{experiment_id}/logs",
-                "replay_command": row.get("replay_command", "").strip() or str(fallback["replay_command"]),
+                "experiment_bundle": experiment_bundle,
+                "logs_dir": row.get("logs_dir", "").strip() or bundle_metadata.get("logs_dir", "").strip() or f"results/{experiment_id}/logs",
+                "replay_command": row.get("replay_command", "").strip() or bundle_metadata.get("replay_command", "").strip() or str(fallback["replay_command"]),
                 "hardware_summary": row.get("hardware_summary", "").strip() or hardware_summary(experiment_rows),
             }
         )
@@ -443,17 +502,19 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
             continue
         experiment_rows = load_rows(results_path)
         fallback = fallback_experiment_metadata(experiment_id)
+        experiment_bundle = f"results/{experiment_id}/experiment.txt"
+        bundle_metadata = load_experiment_bundle_metadata(build_root / experiment_bundle)
         experiments.append(
             {
                 "experiment_id": experiment_id,
-                "label": str(fallback["label"]),
+                "label": bundle_metadata.get("label", "").strip() or str(fallback["label"]),
                 "is_default": bool(fallback["is_default"]),
                 "sort_order": int(fallback["sort_order"]),
-                "definition_path": str(fallback["definition_path"]),
+                "definition_path": bundle_metadata.get("definition_path", "").strip() or str(fallback["definition_path"]),
                 "results_table": results_path.relative_to(build_root).as_posix(),
-                "experiment_bundle": f"results/{experiment_id}/experiment.txt",
-                "logs_dir": f"results/{experiment_id}/logs",
-                "replay_command": str(fallback["replay_command"]),
+                "experiment_bundle": experiment_bundle,
+                "logs_dir": bundle_metadata.get("logs_dir", "").strip() or f"results/{experiment_id}/logs",
+                "replay_command": bundle_metadata.get("replay_command", "").strip() or str(fallback["replay_command"]),
                 "hardware_summary": hardware_summary(experiment_rows),
             }
         )
@@ -549,6 +610,7 @@ def write_build(build_dir: Path, systems_dir: Path, sources_dir: Path, results_d
     shutil.copytree(systems_dir, build_dir / systems_dir.stem)
     shutil.copytree(results_dir, build_dir / results_dir.stem)
     shutil.copytree(sources_dir, build_dir, dirs_exist_ok=True)
+    render_static_pages(build_dir)
 
     embedded_experiments, embedded_runs, embedded_summaries, embedded_profiles, default_experiment = build_track_assets(
         build_dir,
@@ -563,7 +625,8 @@ def write_build(build_dir: Path, systems_dir: Path, sources_dir: Path, results_d
         embedded_profiles,
         default_experiment,
     )
-    (build_dir / "index.html").write_text(html, encoding="utf-8")
+    (build_dir / "index.html").write_text(render_shared_page_fragments(html), encoding="utf-8")
+
 
 
 def main(systems_dir: Path, sources_dir: Path, results_dir: Path, build_dir: Path) -> None:
