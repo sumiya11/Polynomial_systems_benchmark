@@ -1,0 +1,34 @@
+run_id: apply-chandra-8-axf4-t8
+track: apply_vs_axf4__merry_sky_lynx
+job_id: apply-chandra-8-axf4-t8
+system_ref: systems/chandra/chandra.md
+input_ref: systems/chandra/txt/chandra_8.txt
+software: axf4 -t 8
+version: local-copy
+runner: axf4
+threads: 8
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 43
+status: ok
+exit_code: 0
+wall_time_seconds: 0.020336
+process_wall_time_seconds: 0.020336
+started_at_utc: 2026-05-16T10:49:16Z
+finished_at_utc: 2026-05-16T10:49:17Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [H1,H2,H3,H4,H5,H6,H7,H8] -t 8 /tmp/gbbench-axf4-bdwei247/chandra_8.txt
+
+[stdout]
+error: can't parse term -288421779135875//1125899906842624*H1^2 - 288421779135875//1688849860263936*H1*H2 - 288421779135875//2251799813685248*H1*H3 - 57684355827175//562949953421312*H1*H4 - 288421779135875//3377699720527872*H1*H5 - 41203111305125//562949953421312*H1*H6 - 288421779135875//4503599627370496*H1*H7 + 8718777475605117//562949953421312*H1 - 16
+
+[stderr]
+

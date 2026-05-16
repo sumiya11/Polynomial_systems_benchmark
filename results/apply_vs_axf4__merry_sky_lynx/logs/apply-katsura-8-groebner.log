@@ -1,0 +1,36 @@
+run_id: apply-katsura-8-groebner
+track: apply_vs_axf4__merry_sky_lynx
+job_id: apply-katsura-8-groebner
+system_ref: systems/katsura/katsura.md
+input_ref: systems/katsura/txt/katsura_8.txt
+software: Groebner.groebner
+version: 0.10.3
+runner: groebner_jl
+threads: 8
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 596
+status: ok
+exit_code: 0
+wall_time_seconds: 0.151947729
+process_wall_time_seconds: 6.342752
+started_at_utc: 2026-05-16T11:48:45Z
+finished_at_utc: 2026-05-16T11:48:51Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-khp7tsyw/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/katsura/txt/katsura_8.txt --field GF(2147483647) --order degrevlex --threads 8 --method groebner
+
+[stdout]
+GBBENCH_WALL_TIME=0.151947729
+GBBENCH_BYTES=73666528
+GBBENCH_VERSION=0.10.3
+
+[stderr]
+

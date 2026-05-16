@@ -1,0 +1,34 @@
+run_id: apply-goodwin-main-axf4-t8
+track: apply_vs_axf4__merry_sky_lynx
+job_id: apply-goodwin-main-axf4-t8
+system_ref: systems/goodwin/goodwin.md
+input_ref: systems/goodwin/txt/goodwin.txt
+software: axf4 -t 8
+version: local-copy
+runner: axf4
+threads: 8
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 183
+status: ok
+exit_code: 0
+wall_time_seconds: 0.075450
+process_wall_time_seconds: 0.075450
+started_at_utc: 2026-05-16T11:27:59Z
+finished_at_utc: 2026-05-16T11:27:59Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x1_9,x1_8,x4_8,x1_7,x2_7,x3_7,x4_7,x1_6,x2_6,x3_6,x4_6,x1_5,x2_5,x3_5,x4_5,x1_4,x2_4,x3_4,x4_4,x1_3,x2_3,x3_3,x4_3,x1_2,x2_2,x3_2,x4_2,x1_1,x2_1,x3_1,x4_1,x1_0,x2_0,x3_0,x4_0,z_aux,b_0,c_0,alpha_0,beta_0,gama_0,delta_0,sigma_0] -t 8 /tmp/gbbench-axf4-bf5e9k6g/goodwin.txt
+
+[stdout]
+error: can't parse term - 109365372900331087094671182948099025791485844124302772199831//20532014486747450052
+
+[stderr]
+

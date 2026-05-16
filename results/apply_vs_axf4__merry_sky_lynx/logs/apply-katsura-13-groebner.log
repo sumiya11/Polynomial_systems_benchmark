@@ -1,0 +1,234 @@
+run_id: apply-katsura-13-groebner
+track: apply_vs_axf4__merry_sky_lynx
+job_id: apply-katsura-13-groebner
+system_ref: systems/katsura/katsura.md
+input_ref: systems/katsura/txt/katsura_13.txt
+software: Groebner.groebner
+version: 0.10.3
+runner: groebner_jl
+threads: 8
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 5705
+status: error
+exit_code: 1
+wall_time_seconds: 56.481453
+process_wall_time_seconds: 56.481453
+started_at_utc: 2026-05-16T11:35:02Z
+finished_at_utc: 2026-05-16T11:35:59Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-khp7tsyw/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/katsura/txt/katsura_13.txt --field GF(2147483647) --order degrevlex --threads 8 --method groebner
+
+[stdout]
+
+
+[stderr]
+Internal error: during type inference of
+getproperty(NamedTuple{(:exception, :backtrace), Tuple{LoadError, Array{Union{Ptr{Nothing}, Base.InterpreterIP}, 1}}}, Symbol)
+Encountered unexpected error in runtime:
+OutOfMemoryError()
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:94 [inlined]
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:75
+jl_gc_alloc_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:142
+gc_add_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:702
+jl_gc_small_alloc_inner at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:763 [inlined]
+ijl_gc_small_alloc at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:774
+InferenceResult at ./../usr/share/julia/Compiler/src/types.jl:123 [inlined]
+InferenceResult at ./../usr/share/julia/Compiler/src/types.jl:129 [inlined]
+typeinf_ext at ./../usr/share/julia/Compiler/src/typeinfer.jl:1244
+typeinf_ext_toplevel at ./../usr/share/julia/Compiler/src/typeinfer.jl:1435 [inlined]
+typeinf_ext_toplevel at ./../usr/share/julia/Compiler/src/typeinfer.jl:1444
+jfptr_typeinf_ext_toplevel_78944.1 at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_type_infer at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:462
+jl_compile_method_internal at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:3512
+_jl_invoke at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4002 [inlined]
+ijl_apply_generic at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4210
+scrub_repl_backtrace at ./client.jl:101
+exec_options at ./client.jl:320
+_start at ./client.jl:550
+jfptr__start_38203.1 at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+true_main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:971
+jl_repl_entrypoint at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f269a029d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S
+Internal error: during type inference of
+scrub_repl_backtrace(Array{Union{Ptr{Nothing}, Base.InterpreterIP}, 1})
+Encountered unexpected error in runtime:
+OutOfMemoryError()
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:94 [inlined]
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:75
+jl_gc_alloc_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:142
+gc_add_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:702
+jl_gc_small_alloc_inner at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:763 [inlined]
+ijl_gc_small_alloc at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:774
+InferenceResult at ./../usr/share/julia/Compiler/src/types.jl:123 [inlined]
+InferenceResult at ./../usr/share/julia/Compiler/src/types.jl:129 [inlined]
+typeinf_ext at ./../usr/share/julia/Compiler/src/typeinfer.jl:1244
+typeinf_ext_toplevel at ./../usr/share/julia/Compiler/src/typeinfer.jl:1435 [inlined]
+typeinf_ext_toplevel at ./../usr/share/julia/Compiler/src/typeinfer.jl:1444
+jfptr_typeinf_ext_toplevel_78944.1 at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_type_infer at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:462
+jl_compile_method_internal at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:3512
+_jl_invoke at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4002 [inlined]
+ijl_apply_generic at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4210
+scrub_repl_backtrace at ./client.jl:101
+exec_options at ./client.jl:320
+_start at ./client.jl:550
+jfptr__start_38203.1 at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+true_main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:971
+jl_repl_entrypoint at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f269a029d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S
+fatal: error thrown and no exception handler available.
+OutOfMemoryError()
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:94 [inlined]
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:75
+jl_gc_alloc_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:142
+gc_add_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:702
+jl_gc_small_alloc_inner at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:763 [inlined]
+jl_gc_small_alloc_noinline at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:783 [inlined]
+jl_gc_alloc_ at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:797
+jl_alloc_genericmemory_unchecked at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/genericmemory.c:41
+GenericMemory at ./boot.jl:588 [inlined]
+Array at ./boot.jl:647 [inlined]
+lookup at ./stacktraces.jl:113
+stacktrace at ./stacktraces.jl:192
+stacktrace at ./stacktraces.jl:190
+unknown function (ip: 0x7f2614f34bb2) at (unknown file)
+scrub_repl_backtrace at ./client.jl:94
+unknown function (ip: 0x7f2614f34b62) at (unknown file)
+scrub_repl_backtrace at ./client.jl:101
+_start at ./client.jl:567
+jfptr__start_38203.1 at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+true_main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:971
+jl_repl_entrypoint at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f269a029d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S
+Internal error: during type inference of
+_atexit(Int32)
+Encountered unexpected error in runtime:
+OutOfMemoryError()
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:94 [inlined]
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:75
+jl_gc_alloc_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:142
+gc_add_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:702
+jl_gc_small_alloc_inner at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:763 [inlined]
+ijl_gc_small_alloc at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:774
+InferenceResult at ./../usr/share/julia/Compiler/src/types.jl:123 [inlined]
+InferenceResult at ./../usr/share/julia/Compiler/src/types.jl:129 [inlined]
+typeinf_ext at ./../usr/share/julia/Compiler/src/typeinfer.jl:1244
+typeinf_ext_toplevel at ./../usr/share/julia/Compiler/src/typeinfer.jl:1435 [inlined]
+typeinf_ext_toplevel at ./../usr/share/julia/Compiler/src/typeinfer.jl:1444
+jfptr_typeinf_ext_toplevel_78944.1 at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/lib/julia/sys.so (unknown line)
+jl_apply at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+jl_type_infer at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:462
+jl_compile_method_internal at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:3512
+_jl_invoke at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4002 [inlined]
+ijl_apply_generic at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4210
+jl_apply at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+ijl_atexit_hook at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/init.c:260
+ijl_exit at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/init.c:196
+ijl_no_exc_handler at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/task.c:737
+true_main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:978
+jl_repl_entrypoint at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f269a029d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S
+
+atexit hook threw an error: OutOfMemoryError()
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:94 [inlined]
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:75
+jl_gc_alloc_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:142
+gc_add_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:702
+jl_gc_small_alloc_inner at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:763 [inlined]
+jl_gc_small_alloc_noinline at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:783 [inlined]
+jl_gc_alloc_ at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:797
+ijl_new_struct_uninit at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/datatype.c:1720
+jl_decode_value at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/ircode.c:848
+jl_decode_value_expr at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/ircode.c:683 [inlined]
+jl_decode_value at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/ircode.c:841
+ijl_uncompress_ir at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/ircode.c:1160
+jl_generate_fptr_for_unspecialized_impl at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jitlayers.cpp:851
+jl_compile_method_internal at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:3548
+_jl_invoke at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4002 [inlined]
+ijl_apply_generic at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4210
+jl_apply at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/julia.h:2391 [inlined]
+ijl_atexit_hook at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/init.c:260
+ijl_exit at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/init.c:196
+ijl_no_exc_handler at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/task.c:737
+true_main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:978
+jl_repl_entrypoint at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f269a029d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S
+error in running finalizer: Core.OutOfMemoryError()
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:94 [inlined]
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:75
+jl_gc_alloc_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:142
+gc_add_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:702
+jl_gc_small_alloc_inner at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:763 [inlined]
+jl_gc_small_alloc_noinline at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:783 [inlined]
+jl_gc_alloc_ at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:797
+ijl_box_uint64 at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/datatype.c:1528
+jl_type_infer at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:433
+jl_compile_method_internal at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:3512
+_jl_invoke at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4002 [inlined]
+ijl_apply_generic at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4210
+run_finalizer at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-common.c:180
+jl_gc_run_finalizers_in_list at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-common.c:270
+run_finalizers at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-common.c:316
+ijl_atexit_hook at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/init.c:292
+ijl_exit at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/init.c:196
+ijl_no_exc_handler at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/task.c:737
+true_main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:978
+jl_repl_entrypoint at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f269a029d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S
+error in running finalizer: Core.OutOfMemoryError()
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:94 [inlined]
+jl_gc_try_alloc_pages at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:75
+jl_gc_alloc_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-pages.c:142
+gc_add_page at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:702
+jl_gc_small_alloc_inner at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:763 [inlined]
+jl_gc_small_alloc_noinline at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:783 [inlined]
+jl_gc_alloc_ at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-stock.c:797
+ijl_box_uint64 at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/datatype.c:1528
+jl_type_infer at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:433
+jl_compile_method_internal at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:3512
+_jl_invoke at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4002 [inlined]
+ijl_apply_generic at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gf.c:4210
+run_finalizer at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-common.c:180
+jl_gc_run_finalizers_in_list at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-common.c:270
+run_finalizers at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/gc-common.c:316
+ijl_atexit_hook at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/init.c:292
+ijl_exit at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/init.c:196
+ijl_no_exc_handler at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/task.c:737
+true_main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:978
+jl_repl_entrypoint at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+main at /cache/build/tester-amdci4-14/julialang/julia-release-1-dot-12/cli/loader_exe.c:58
+unknown function (ip: 0x7f269a029d8f) at /lib/x86_64-linux-gnu/libc.so.6
+__libc_start_main at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x4010b8) at /workspace/srcdir/glibc-2.17/csu/../sysdeps/x86_64/start.S

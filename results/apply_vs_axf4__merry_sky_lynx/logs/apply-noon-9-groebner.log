@@ -1,0 +1,34 @@
+run_id: apply-noon-9-groebner
+track: apply_vs_axf4__merry_sky_lynx
+job_id: apply-noon-9-groebner
+system_ref: systems/noon/noon.md
+input_ref: systems/noon/txt/noon_9.txt
+software: Groebner.groebner
+version: local
+runner: groebner_jl
+threads: 8
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 
+status: timeout
+exit_code: 
+wall_time_seconds: 60.088765
+process_wall_time_seconds: 60.088765
+started_at_utc: 2026-05-16T12:20:09Z
+finished_at_utc: 2026-05-16T12:21:09Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: 
+
+[stdout]
+
+
+[stderr]
+

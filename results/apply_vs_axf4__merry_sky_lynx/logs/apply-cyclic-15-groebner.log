@@ -1,0 +1,59 @@
+run_id: apply-cyclic-15-groebner
+track: apply_vs_axf4__merry_sky_lynx
+job_id: apply-cyclic-15-groebner
+system_ref: systems/cyclic/cyclic.md
+input_ref: systems/cyclic/txt/cyclic_15.txt
+software: Groebner.groebner
+version: 0.10.3
+runner: groebner_jl
+threads: 8
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 5833
+status: error
+exit_code: 134
+wall_time_seconds: 52.960816
+process_wall_time_seconds: 52.960816
+started_at_utc: 2026-05-16T11:09:52Z
+finished_at_utc: 2026-05-16T11:10:45Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-khp7tsyw/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/cyclic/txt/cyclic_15.txt --field GF(2147483647) --order degrevlex --threads 8 --method groebner
+
+[stdout]
+
+
+[stderr]
+terminate called after throwing an instance of 'std::bad_alloc'
+  what():  std::bad_alloc
+
+[1789532] signal 6 (-6): Abandon
+in expression starting at none:0
+pthread_kill at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+raise at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+abort at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x7f88f84a9a3c) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6
+unknown function (ip: 0x7f88f84bb449) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6
+_ZSt9terminatev at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6 (unknown line)
+__cxa_throw at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6 (unknown line)
+unknown function (ip: 0x7f88f84a96d6) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6
+unknown function (ip: 0x7f88f1e6d56e) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libLLVM.so.18.1jl
+unknown function (ip: 0x7f88f3ae2612) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libLLVM.so.18.1jl
+_ZN4llvm13LazyCallGraph9buildSCCsERNS0_6RefSCCENS_14iterator_rangeISt16reverse_iteratorIPPNS0_4NodeEEEE at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libLLVM.so.18.1jl (unknown line)
+_ZN4llvm13LazyCallGraph12buildRefSCCsEv at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libLLVM.so.18.1jl (unknown line)
+_ZN4llvm33ModuleToPostOrderCGSCCPassAdaptor3runERNS_6ModuleERNS_15AnalysisManagerIS1_JEEE at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libLLVM.so.18.1jl (unknown line)
+unknown function (ip: 0x7f88f7790155) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libjulia-codegen.so.1.12
+_ZN4llvm11PassManagerINS_6ModuleENS_15AnalysisManagerIS1_JEEEJEE3runERS1_RS3_ at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libLLVM.so.18.1jl (unknown line)
+unknown function (ip: 0x7f88f778d338) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libjulia-codegen.so.1.12
+unknown function (ip: 0x7f88f76fbe01) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libjulia-codegen.so.1.12
+unknown function (ip: 0x7f88f76fc6f1) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libjulia-codegen.so.1.12
+unknown function (ip: 0x7f88f76fddcb) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libjulia-codegen.so.1.12
+jl_compile_codeinst_impl at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libjulia-codegen.so.1.12 (unknown line)
+terminate called recursively

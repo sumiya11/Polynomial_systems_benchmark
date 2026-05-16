@@ -1,0 +1,34 @@
+run_id: apply-akt_pathway-main-axf4-t1
+track: apply_vs_axf4__merry_sky_lynx
+job_id: apply-akt_pathway-main-axf4-t1
+system_ref: systems/akt_pathway/akt_pathway.md
+input_ref: systems/akt_pathway/txt/akt_pathway.txt
+software: axf4 -t 1
+version: local-copy
+runner: axf4
+threads: 1
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 239
+status: ok
+exit_code: 0
+wall_time_seconds: 0.077347
+process_wall_time_seconds: 0.077347
+started_at_utc: 2026-05-16T10:47:32Z
+finished_at_utc: 2026-05-16T10:47:32Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [Akt_0,Akt_1,Akt_2,Akt_3,Akt_4,Akt_5,EGF_EGFR_0,EGF_EGFR_1,EGF_EGFR_2,EGF_EGFR_3,EGF_EGFR_4,EGF_EGFR_5,S6_0,S6_1,S6_2,S6_3,S6_4,pAkt_0,pAkt_1,pAkt_2,pAkt_3,pAkt_4,pAkt_5,pAkt_S6_0,pAkt_S6_1,pAkt_S6_2,pAkt_S6_3,pAkt_S6_4,pAkt_S6_5,pEGFR_0,pEGFR_1,pEGFR_2,pEGFR_3,pEGFR_4,pEGFR_5,pEGFR_6,pEGFR_Akt_0,pEGFR_Akt_1,pEGFR_Akt_2,pEGFR_Akt_3,pEGFR_Akt_4,pEGFR_Akt_5,pEGFR_Akt_6,pS6_0,pS6_1,pS6_2,pS6_3,pS6_4,pS6_5,reaction_2_k2_0,reaction_3_k1_0,reaction_4_k1_0,reaction_5_k1_0,reaction_6_k1_0,reaction_7_k1_0,reaction_8_k1_0,reaction_9_k1_0] -t 1 /tmp/gbbench-axf4-2o5ith0t/akt_pathway.txt
+
+[stdout]
+error: can't parse term -1//10*pEGFR_0 - 1//10*pEGFR_Akt_0 + 3741373171427667//18014398509481984
+
+[stderr]
+
