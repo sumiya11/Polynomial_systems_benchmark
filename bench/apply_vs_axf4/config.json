@@ -109,13 +109,6 @@
       "job_id_suffix": "groebner-apply"
     },
     {
-      "runner": "groebner_jl",
-      "software": "Groebner.groebner_apply! / 4",
-      "threads": "1",
-      "method": "groebner_apply_avg4",
-      "job_id_suffix": "groebner-apply-avg4"
-    },
-    {
       "runner": "axf4",
       "software": "axf4 -t 1",
       "version": "local-copy",
