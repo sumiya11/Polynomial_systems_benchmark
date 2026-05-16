@@ -4,7 +4,7 @@ An economics modelling application.
 
 - Keywords: system solving.
 - Comments:
-    - n variables, dimension is --, degree is --.
+    - n variables.
 - Timings: -
 - References:
     - Pascal Van Hentenryck, David McAllester, and Deepak Kapur, 

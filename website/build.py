@@ -142,32 +142,11 @@ def read_systems_data(systems_dir: Path) -> dict[str, dict[str, str]]:
     return systems
 
 
-def trim_system_markdown(text: str) -> str:
-    lines = text.splitlines()
-    heading = next((line for line in lines if line.startswith("### ")), None)
-    keywords = next((line for line in lines if line.startswith("- Keywords:")), None)
-    try:
-        sources_start = lines.index("- Sources:")
-    except ValueError:
-        sources_start = None
-
-    if heading is None or keywords is None or sources_start is None:
-        return text
-
-    source_lines = ["- Sources:"]
-    for line in lines[sources_start + 1 :]:
-        if line.startswith("- ") and not line.startswith("    - "):
-            break
-        source_lines.append(line)
-
-    return "\n".join([heading, "", keywords, *source_lines, ""])
-
-
 def populate_html(systems: dict[str, dict[str, str]]) -> str:
     print("Populating index.html")
     body = "<hr>"
     for system in sorted(systems):
-        content = markdown.markdown(trim_system_markdown(systems[system]["content"]))
+        content = markdown.markdown(systems[system]["content"])
         content = re.sub(
             "<h3>(.+)</h3>",
             f'<h3 id="{system}"><a href="#{system}" style="color: black">\\g<1></a></h3>',
