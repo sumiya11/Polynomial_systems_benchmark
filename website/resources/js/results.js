@@ -46,7 +46,7 @@ function parseEmbeddedJson(id) {
 const EMBEDDED_EXPERIMENTS = Array.isArray(parseEmbeddedJson("embeddedExperiments")) ? parseEmbeddedJson("embeddedExperiments") : [];
 const EXPERIMENTS_BY_ID = Object.fromEntries(EMBEDDED_EXPERIMENTS.map((experiment) => [experiment.experiment_id, experiment]));
 const DEFAULT_EXPERIMENT_ID = parseEmbeddedJson("embeddedDefaultExperimentId") || "";
-const GITHUB_REPO_BASE = "https://github.com/sumiya11/GroebnerBenchmark";
+const GITHUB_REPO_BASE = "https://github.com/sumiya11/Polynomial_systems_benchmark";
 
 function uniqueValues(rows, key) {
   return [...new Set(rows.map((row) => row[key]).filter(Boolean))].sort();
@@ -839,7 +839,7 @@ function renderCurrentTrackArtifacts(trackName, rows) {
   }
 
   document.getElementById("reproduceCommand").textContent = [
-    "git clone https://github.com/sumiya11/GroebnerBenchmark.git",
+    "git clone https://github.com/sumiya11/Polynomial_systems_benchmark.git",
     "cd GroebnerBenchmark",
     "python -m pip install -r requirements.txt",
     replayCommand,

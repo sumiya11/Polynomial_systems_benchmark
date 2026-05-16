@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import csv
 import dataclasses
 import functools
@@ -210,6 +211,13 @@ def slugify_track_fragment(text: str) -> str:
     slug = re.sub(r"[^a-z0-9]+", "_", text.strip().lower()).strip("_")
     if not slug:
         raise ValueError("Machine label must contain at least one ASCII letter or digit")
+    return slug
+
+
+def slugify_job_fragment(text: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", text.strip().lower()).strip("-")
+    if not slug:
+        raise ValueError("Generated software entries must contain at least one ASCII letter or digit")
     return slug
 
 
@@ -537,6 +545,8 @@ def groebner_jl_version() -> str:
 def default_version_for_runner(runner_name: str, configured_version: str) -> str:
     if runner_name == "groebner_jl":
         return groebner_jl_version() or configured_version
+    if runner_name == "axf4":
+        return configured_version or "local-copy"
     return configured_version
 
 
@@ -927,10 +937,6 @@ def normalized_example_entry(track: dict[str, object], entry: object) -> dict[st
     }
 
 
-def track_example_ids(track: dict[str, object]) -> list[str]:
-    return [normalized_example_entry(track, entry)["instance_id"] for entry in track.get("examples", [])]
-
-
 def normalized_generated_software(entry: object) -> dict[str, str]:
     if not isinstance(entry, dict):
         raise ValueError("Each generated software entry must be an object")
@@ -946,11 +952,64 @@ def normalized_generated_software(entry: object) -> dict[str, str]:
         "multi_thread": stringify_config_value(entry.get("multi_thread")).strip(),
         "memory_limit_mb": normalize_optional_positive_int_text(entry.get("memory_limit_mb"), "memory_limit_mb"),
     }
-    if not software["job_id_suffix"]:
-        raise ValueError("Each generated software entry must define a non-empty job_id_suffix")
     if not software["runner"] and not software["command"]:
-        raise ValueError(f"Software entry '{software['job_id_suffix']}' must define either a runner or a command")
+        label = software["job_id_suffix"] or software["software"] or software["command"] or "<unknown>"
+        raise ValueError(f"Software entry '{label}' must define either a runner or a command")
     return software
+
+
+def default_generated_job_id_suffix(software: dict[str, str]) -> str:
+    runner_name = software["runner"]
+    if runner_name == "groebner_jl":
+        return slugify_job_fragment(software["method"] or "groebner")
+    if runner_name == "axf4":
+        return "axf4"
+    if software["software"]:
+        return slugify_job_fragment(software["software"])
+    if runner_name:
+        return slugify_job_fragment(runner_name)
+    return slugify_job_fragment(software["command"])
+
+
+def disambiguated_generated_job_id_suffix(base_suffix: str, software: dict[str, str]) -> str:
+    threads = software["threads"].strip()
+    if threads:
+        return slugify_job_fragment(f"{base_suffix} t{threads}")
+
+    for candidate_text in (software["method"], software["software"], software["command"], software["runner"]):
+        if not candidate_text:
+            continue
+        candidate = slugify_job_fragment(candidate_text)
+        if candidate != base_suffix:
+            return candidate
+
+    return base_suffix
+
+
+def resolved_generated_software_entries(entries: list[object]) -> list[dict[str, str]]:
+    normalized_entries = [normalized_generated_software(entry) for entry in entries]
+    initial_suffixes = [entry["job_id_suffix"] or default_generated_job_id_suffix(entry) for entry in normalized_entries]
+    initial_counts = Counter(initial_suffixes)
+    resolved_entries = []
+
+    for entry, initial_suffix in zip(normalized_entries, initial_suffixes):
+        resolved_suffix = entry["job_id_suffix"] or initial_suffix
+        if not entry["job_id_suffix"] and initial_counts[initial_suffix] > 1:
+            resolved_suffix = disambiguated_generated_job_id_suffix(initial_suffix, entry)
+        resolved_entries.append({**entry, "job_id_suffix": resolved_suffix})
+
+    duplicate_suffixes = [
+        suffix
+        for suffix, count in Counter(entry["job_id_suffix"] for entry in resolved_entries).items()
+        if count > 1
+    ]
+    if duplicate_suffixes:
+        raise ValueError(
+            "Generated software entries must resolve to unique job_id_suffix values: "
+            + ", ".join(sorted(duplicate_suffixes))
+        )
+
+    return resolved_entries
 
 
 def validate_job(job: dict[str, str], source: str) -> dict[str, str]:
@@ -965,11 +1024,11 @@ def validate_job(job: dict[str, str], source: str) -> dict[str, str]:
 def build_generated_jobs(track_name: str, track: dict[str, object]) -> list[dict[str, str]]:
     job_id_prefix = stringify_config_value(track.get("job_id_prefix")).strip()
     prefix = f"{job_id_prefix}-" if job_id_prefix else ""
+    software_entries = resolved_generated_software_entries(track.get("software", []))
     jobs = []
     for example in track.get("examples", []):
         normalized_example = normalized_example_entry(track, example)
-        for software_entry in track.get("software", []):
-            software = normalized_generated_software(software_entry)
+        for software in software_entries:
             job_id = f"{prefix}{normalized_example['instance_id']}-{software['job_id_suffix']}"
             job = {
                 "job_id": job_id,

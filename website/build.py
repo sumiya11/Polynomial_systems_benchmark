@@ -65,8 +65,7 @@ SITE_HEADER_HTML = """<h1>Polynomial systems benchmark</h1>
     <a href=\"index.html\">Systems</a>
     <a href=\"results.html\">Results</a>
     <a href=\"contribute.html\">Contribute</a>
-    <a href=\"logs.html\">Logs</a>
-    <a href=\"https://github.com/sumiya11/GroebnerBenchmark\">GitHub</a>
+    <a href=\"https://github.com/sumiya11/Polynomial_systems_benchmark\">GitHub</a>
 
     <a href=\"javascript:void(0);\"
        class=\"icon\"

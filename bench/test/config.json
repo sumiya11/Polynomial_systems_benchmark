@@ -7,15 +7,12 @@
       "runner": "groebner_jl",
       "software": "Groebner.groebner",
       "threads": "8",
-      "method": "groebner",
-      "job_id_suffix": "groebner"
+      "method": "groebner"
     },
     {
       "runner": "axf4",
       "software": "axf4",
-      "version": "local-copy",
-      "threads": "8",
-      "job_id_suffix": "axf4"
+      "threads": "8"
     }
   ],
   "field": "GF(32003)",

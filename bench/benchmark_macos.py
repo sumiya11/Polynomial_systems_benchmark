@@ -146,12 +146,3 @@ def run_process(
     )
 
 
-def run_process_with_memory_limit(
-    command: list[str] | str,
-    cwd: Path,
-    timeout_s: float | None,
-    env: dict[str, str],
-    shell: bool,
-    memory_limit_mb: int,
-) -> subprocess.CompletedProcess[str]:
-    return run_process(command, cwd, timeout_s, env, shell, memory_limit_mb)
