@@ -486,6 +486,14 @@ def command_text(command: list[str] | str) -> str:
     return format_command(command)
 
 
+def coerce_text(value: object) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return str(value)
+
+
 def memory_limit_bytes(memory_limit_mb: int | None) -> int | None:
     if memory_limit_mb is None:
         return None
@@ -573,8 +581,8 @@ def run_process(
     return {
         "status": "ok" if completed.returncode == 0 else "error",
         "exit_code": str(completed.returncode),
-        "stdout": completed.stdout,
-        "stderr": completed.stderr,
+        "stdout": coerce_text(completed.stdout),
+        "stderr": coerce_text(completed.stderr),
         "peak_memory_mb": stringify_config_value(getattr(completed, "peak_memory_mb", None)),
         "command": command_text(command),
     }
@@ -995,6 +1003,8 @@ def run_named_runner(
 
 def write_log_file(log_path: Path, row: dict[str, str], stdout: str, stderr: str) -> None:
     log_path.parent.mkdir(parents=True, exist_ok=True)
+    stdout_text = coerce_text(stdout)
+    stderr_text = coerce_text(stderr)
     lines = [
         f"run_id: {row['run_id']}",
         f"track: {row['track']}",
@@ -1026,10 +1036,10 @@ def write_log_file(log_path: Path, row: dict[str, str], stdout: str, stderr: str
         f"command: {row['command']}",
         "",
         "[stdout]",
-        stdout.rstrip(),
+        stdout_text.rstrip(),
         "",
         "[stderr]",
-        stderr.rstrip(),
+        stderr_text.rstrip(),
         "",
     ]
     log_path.write_text("\n".join(lines), encoding="utf-8")
@@ -1052,8 +1062,8 @@ def run_legacy_command(
     return {
         "status": "ok" if completed.returncode == 0 else "error",
         "exit_code": str(completed.returncode),
-        "stdout": completed.stdout,
-        "stderr": completed.stderr,
+        "stdout": coerce_text(completed.stdout),
+        "stderr": coerce_text(completed.stderr),
         "peak_memory_mb": stringify_config_value(getattr(completed, "peak_memory_mb", None)),
         "command": job["command"],
         "wall_time_seconds": "",
@@ -1092,8 +1102,8 @@ def run_job(
         result = {
             "status": "timeout",
             "exit_code": "",
-            "stdout": exc.stdout or "",
-            "stderr": exc.stderr or "",
+            "stdout": coerce_text(exc.stdout),
+            "stderr": coerce_text(exc.stderr),
             "command": job.get("command", ""),
             "wall_time_seconds": "",
             "runner": job.get("runner", "").strip() or "command",
