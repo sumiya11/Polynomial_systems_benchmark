@@ -4,6 +4,10 @@ const pageState = {
   profileSvgsByTrack: {},
   currentRows: [],
   currentTrack: "",
+  matrixSort: {
+    column: "__example__",
+    direction: "asc",
+  },
 };
 
 function parseTsv(text) {
@@ -270,13 +274,38 @@ function formatTimingCell(row) {
   return formatSeconds(row.process_wall_time_seconds);
 }
 
+function timingValue(row) {
+  if (!row || row.status !== "ok") {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  const measured = Number(row.wall_time_seconds || row.process_wall_time_seconds || "");
+  return Number.isFinite(measured) ? measured : Number.POSITIVE_INFINITY;
+}
+
+function matrixSortIndicator(columnKey) {
+  const isActive = pageState.matrixSort.column === columnKey;
+  if (!isActive) {
+    return "&harr;";
+  }
+  return pageState.matrixSort.direction === "asc" ? "&uarr;" : "&darr;";
+}
+
+function setMatrixSort(columnKey) {
+  if (pageState.matrixSort.column === columnKey) {
+    pageState.matrixSort.direction = pageState.matrixSort.direction === "asc" ? "desc" : "asc";
+  } else {
+    pageState.matrixSort.column = columnKey;
+    pageState.matrixSort.direction = columnKey === "__example__" ? "asc" : "asc";
+  }
+}
+
 function renderTimingsMatrix(rows) {
   const table = document.getElementById("timingsMatrixTable");
   const thead = table.querySelector("thead");
   const tbody = table.querySelector("tbody");
   const downloadLink = document.getElementById("downloadTimingsCsv");
   const softwareNames = uniqueValues(rows, "software");
-  const orderedInstances = uniqueValues(rows, "instance_id");
 
   if (softwareNames.length === 0) {
     thead.innerHTML = '<tr><th>Example</th></tr>';
@@ -288,13 +317,6 @@ function renderTimingsMatrix(rows) {
     return;
   }
 
-  thead.innerHTML = `
-    <tr>
-      <th>Example</th>
-      ${softwareNames.map((software) => `<th>${escapeHtml(software)}</th>`).join("")}
-    </tr>
-  `;
-
   const rowsByInstanceAndSoftware = new Map();
   const sampleRowByInstance = new Map();
   rows.forEach((row) => {
@@ -302,6 +324,48 @@ function renderTimingsMatrix(rows) {
     if (!sampleRowByInstance.has(row.instance_id)) {
       sampleRowByInstance.set(row.instance_id, row);
     }
+  });
+
+  const orderedInstances = uniqueValues(rows, "instance_id").sort((left, right) => {
+    const direction = pageState.matrixSort.direction === "desc" ? -1 : 1;
+    if (pageState.matrixSort.column === "__example__") {
+      return left.localeCompare(right, undefined, { numeric: true }) * direction;
+    }
+
+    const leftRow = rowsByInstanceAndSoftware.get(`${left}::${pageState.matrixSort.column}`);
+    const rightRow = rowsByInstanceAndSoftware.get(`${right}::${pageState.matrixSort.column}`);
+    const leftValue = timingValue(leftRow);
+    const rightValue = timingValue(rightRow);
+    const leftSolved = Number.isFinite(leftValue);
+    const rightSolved = Number.isFinite(rightValue);
+
+    if (leftSolved !== rightSolved) {
+      return leftSolved ? -1 : 1;
+    }
+    if (leftSolved && rightSolved && leftValue !== rightValue) {
+      return (leftValue - rightValue) * direction;
+    }
+    return left.localeCompare(right, undefined, { numeric: true });
+  });
+
+  const bestTimingByInstance = new Map();
+  orderedInstances.forEach((instanceId) => {
+    const best = Math.min(...softwareNames.map((software) => timingValue(rowsByInstanceAndSoftware.get(`${instanceId}::${software}`))));
+    bestTimingByInstance.set(instanceId, Number.isFinite(best) ? best : null);
+  });
+
+  thead.innerHTML = `
+    <tr>
+      <th><button class="matrix-sort-button" type="button" data-matrix-sort="__example__">Example <span class="matrix-sort-indicator">${matrixSortIndicator("__example__")}</span></button></th>
+      ${softwareNames.map((software) => `<th><button class="matrix-sort-button" type="button" data-matrix-sort="${escapeHtml(software)}">${escapeHtml(software)} <span class="matrix-sort-indicator">${matrixSortIndicator(software)}</span></button></th>`).join("")}
+    </tr>
+  `;
+
+  thead.querySelectorAll("[data-matrix-sort]").forEach((element) => {
+    element.addEventListener("click", () => {
+      setMatrixSort(element.getAttribute("data-matrix-sort") || "__example__");
+      renderTimingsMatrix(pageState.currentRows);
+    });
   });
 
   tbody.innerHTML = orderedInstances.map((instanceId) => `
@@ -314,7 +378,10 @@ function renderTimingsMatrix(rows) {
       })()}</td>
       ${softwareNames.map((software) => {
         const row = rowsByInstanceAndSoftware.get(`${instanceId}::${software}`);
-        return `<td>${escapeHtml(formatTimingCell(row))}</td>`;
+        const best = bestTimingByInstance.get(instanceId);
+        const value = timingValue(row);
+        const isBest = best !== null && Number.isFinite(value) && Math.abs(value - best) <= 1e-12;
+        return `<td class="${isBest ? "matrix-best" : ""}">${escapeHtml(formatTimingCell(row))}</td>`;
       }).join("")}
     </tr>
   `).join("");
@@ -558,6 +625,10 @@ async function setTrack(trackName) {
   await ensureTrackData(trackName);
   pageState.currentTrack = trackName;
   pageState.currentRows = pageState.rowsByTrack[trackName];
+  pageState.matrixSort = {
+    column: "__example__",
+    direction: "asc",
+  };
 
   document.getElementById("familyFilter").value = "";
   document.getElementById("softwareFilter").value = "";

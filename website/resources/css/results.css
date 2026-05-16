@@ -1,5 +1,7 @@
 .page-shell {
-  margin: 20px 30px 40px 30px;
+  max-width: 1720px;
+  margin: 20px auto 40px auto;
+  padding: 0 clamp(16px, 2.4vw, 32px);
 }
 
 .displayed-experiment-bar {
@@ -106,12 +108,13 @@
 .overview-visual {
   margin-top: 0;
   padding: 0;
+  min-width: 0;
 }
 
 .overview-main {
   display: grid;
-  grid-template-columns: minmax(0, 2.2fr) minmax(300px, 340px);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) clamp(260px, 24vw, 360px);
+  gap: clamp(18px, 2.2vw, 30px);
   align-items: start;
   margin-top: 0;
 }
@@ -145,7 +148,9 @@
 }
 
 .profile-figure {
-  width: min(100%, 1040px);
+  width: 100%;
+  max-width: none;
+  min-width: 0;
   margin: 0;
   background: transparent;
 }
@@ -273,6 +278,36 @@
   width: auto;
 }
 
+.matrix-sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+}
+
+.matrix-sort-button:hover,
+.matrix-sort-button:focus-visible {
+  color: #1f3528;
+  text-decoration: underline;
+}
+
+.matrix-sort-indicator {
+  font-size: 0.9em;
+  color: #496255;
+}
+
+.matrix-best {
+  background: #e5f2e8;
+  color: #1f3528;
+  font-weight: 600;
+}
+
 .section-action,
 .instance-link {
   color: #005f99;
@@ -372,14 +407,19 @@
   text-decoration: none;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 768px) {
   .page-shell {
-    margin-left: 16px;
-    margin-right: 16px;
+    margin: 16px auto 28px auto;
+    padding: 0 14px;
   }
 
   .overview-main {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .overview-sidebar {
+    gap: 14px;
   }
 
   .displayed-experiment-bar select {
@@ -388,5 +428,25 @@
 
   .section-heading {
     align-items: flex-start;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .displayed-experiment-bar select {
+    font-size: 1.35rem;
+    line-height: 1.1;
+  }
+
+  .section-block {
+    padding: 12px;
+  }
+
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .results-controls label {
+    min-width: 100%;
   }
 }

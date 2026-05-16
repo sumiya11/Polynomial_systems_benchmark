@@ -331,14 +331,29 @@ def render_profile_svg(
 
     legend_labels = sorted(series)
     legend_label_width = max((estimated_svg_text_width(label) for label in legend_labels), default=0.0)
-    legend_gap = 64
-    right = max(240, int(math.ceil(legend_gap + legend_label_width + 28)))
-    plot_width = 536
-    width = 84 + plot_width + right
-    height = 460
     left = 84
     top = 24
-    plot_height = height - top - 68
+    right = 28
+    plot_width = 700
+    plot_height = 348
+    legend_gap_x = 24
+    legend_row_height = 30
+    legend_line_width = 30
+    legend_text_gap = 10
+    legend_cell_width = max(172, int(math.ceil(legend_line_width + legend_text_gap + legend_label_width + 8)))
+    legend_columns = 1
+    if legend_labels:
+        legend_columns = 2 if len(legend_labels) > 1 else 1
+    legend_rows = math.ceil(len(legend_labels) / legend_columns) if legend_labels else 0
+    legend_block_width = (
+        legend_columns * legend_cell_width + max(0, legend_columns - 1) * legend_gap_x if legend_labels else 0
+    )
+    tick_label_band = 36
+    axis_label_band = 30
+    legend_gap_top = 18 if legend_rows else 0
+    legend_top = top + plot_height + tick_label_band + axis_label_band + legend_gap_top
+    height = legend_top + legend_rows * legend_row_height + (20 if legend_rows else 12)
+    width = left + max(plot_width, legend_block_width) + right
 
     if not series:
         output_path.write_text(
@@ -380,6 +395,7 @@ def render_profile_svg(
 
     paths = []
     legend = []
+    legend_origin_x = left + max(0.0, (plot_width - legend_block_width) / 2.0)
     for index, profile in enumerate(sorted(series)):
         color = COLORS[index % len(COLORS)]
         software = software_by_profile.get(profile, profile)
@@ -397,12 +413,15 @@ def render_profile_svg(
             f'<path class="profile-series-line" d="{" ".join(path_commands)}" fill="none" stroke="{color}" stroke-width="3"/>'
             f"</g>"
         )
-        legend_y = top + 24 + index * 32
+        legend_row = index // legend_columns
+        legend_column = index % legend_columns
+        legend_x = legend_origin_x + legend_column * (legend_cell_width + legend_gap_x)
+        legend_y = legend_top + legend_row * legend_row_height
         legend.append(
             f'<g class="profile-legend-entry" data-profile="{profile_attr}" data-software="{software_attr}" tabindex="0">'
             f"<title>{tooltip}</title>"
-            f'<line class="profile-legend-line" x1="{left + plot_width + 24}" y1="{legend_y:.1f}" x2="{left + plot_width + 54}" y2="{legend_y:.1f}" stroke="{color}" stroke-width="4"/>'
-            f'<text class="profile-legend-label" x="{left + plot_width + 64}" y="{legend_y + 6:.1f}" font-size="16" fill="#222">{svg_escape(profile)}</text>'
+            f'<line class="profile-legend-line" x1="{legend_x:.1f}" y1="{legend_y:.1f}" x2="{legend_x + legend_line_width:.1f}" y2="{legend_y:.1f}" stroke="{color}" stroke-width="4"/>'
+            f'<text class="profile-legend-label" x="{legend_x + legend_line_width + legend_text_gap:.1f}" y="{legend_y + 6:.1f}" font-size="16" fill="#222">{svg_escape(profile)}</text>'
             f"</g>"
         )
 
@@ -414,7 +433,7 @@ def render_profile_svg(
         f"  {''.join(grid_lines)}\n"
         f"  {''.join(paths)}\n"
         f"  {''.join(legend)}\n"
-        f"  <text x=\"{left + plot_width / 2}\" y=\"{height - 12}\" text-anchor=\"middle\" font-size=\"16\" fill=\"#333\">tau = runtime / best-runtime-on-case</text>\n"
+        f"  <text x=\"{left + plot_width / 2}\" y=\"{top + plot_height + tick_label_band + 18}\" text-anchor=\"middle\" font-size=\"16\" fill=\"#333\">tau = runtime / best-runtime-on-case</text>\n"
         f"  <text x=\"26\" y=\"{top + plot_height / 2}\" text-anchor=\"middle\" transform=\"rotate(-90 26 {top + plot_height / 2})\" font-size=\"16\" fill=\"#333\">fraction of cases</text>\n"
         f"</svg>\n",
         encoding="utf-8",
