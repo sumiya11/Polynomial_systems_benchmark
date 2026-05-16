@@ -79,14 +79,35 @@ def _systemd_memory_limit_available() -> bool:
 
 
 def _resource_limit_preexec(memory_limit_mb: int):
+    import resource
+
     limit_bytes = memory_limit_mb * 1024 * 1024
+    resource_name = "RLIMIT_AS"
+    if not hasattr(resource, resource_name):
+        return None
+
+    resource_type = getattr(resource, resource_name)
 
     def apply_limit() -> None:
-        import resource
+        try:
+            _current_soft, current_hard = resource.getrlimit(resource_type)
+        except (OSError, ValueError):
+            return
 
-        for name in ("RLIMIT_AS", "RLIMIT_DATA", "RLIMIT_RSS"):
-            if hasattr(resource, name):
-                resource.setrlimit(getattr(resource, name), (limit_bytes, limit_bytes))
+        if current_hard in (-1, resource.RLIM_INFINITY):
+            target_limit = limit_bytes
+        else:
+            target_limit = min(limit_bytes, current_hard)
+
+        if target_limit <= 0:
+            return
+
+        try:
+            resource.setrlimit(resource_type, (target_limit, target_limit))
+        except (OSError, ValueError):
+            # Best effort only: falling back to no pre-exec limit is better than
+            # aborting the child process before exec.
+            return
 
     return apply_limit
 
