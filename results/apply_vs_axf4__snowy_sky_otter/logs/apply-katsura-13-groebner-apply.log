@@ -10,15 +10,15 @@ threads: 1
 field: GF(2147483647)
 order: degrevlex
 hardware_track: 
-timeout_s: 60
-memory_limit_mb: 8192
+timeout_s: 600
+memory_limit_mb: 16384
 peak_memory_mb: 
 status: timeout
 exit_code: 
-wall_time_seconds: 60.025963
-process_wall_time_seconds: 60.025963
-started_at_utc: 2026-05-16T15:46:12Z
-finished_at_utc: 2026-05-16T15:47:12Z
+wall_time_seconds: 600.102275
+process_wall_time_seconds: 600.102275
+started_at_utc: 2026-05-16T18:04:45Z
+finished_at_utc: 2026-05-16T18:14:45Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
