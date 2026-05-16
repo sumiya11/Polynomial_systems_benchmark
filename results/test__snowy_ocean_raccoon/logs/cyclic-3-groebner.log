@@ -1,0 +1,36 @@
+run_id: cyclic-3-groebner
+track: test__snowy_ocean_raccoon
+job_id: cyclic-3-groebner
+system_ref: systems/cyclic/cyclic.md
+input_ref: systems/cyclic/txt/cyclic_3.txt
+software: Groebner.groebner
+version: 0.10.3
+runner: groebner_jl
+threads: 8
+field: GF(32003)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 
+peak_memory_mb: 1064
+status: ok
+exit_code: 0
+wall_time_seconds: 0.0013322
+process_wall_time_seconds: 10.255684
+started_at_utc: 2026-05-16T14:33:37Z
+finished_at_utc: 2026-05-16T14:33:47Z
+runner_host: DESKTOP-RAOJN57
+runner_os: Windows-10-10.0.19045-SP0
+runner_machine: x86_64
+runner_cpu_count: 8
+runner_word_size: 64
+runner_python: 3.10.0
+command: C:\Users\User\AppData\Local\Microsoft\WindowsApps\julia.EXE --startup-file=no C:\Users\User\AppData\Local\Temp\gbbench-groebner-jl-58n781bm\groebner_jl_worker.jl --input "C:\projects\Alexander Demin\gb_benchmarks\systems\cyclic\txt\cyclic_3.txt" --field GF(32003) --order degrevlex --threads 8 --method groebner
+
+[stdout]
+GBBENCH_WALL_TIME=0.0013322
+GBBENCH_BYTES=48643
+GBBENCH_VERSION=0.10.3
+
+[stderr]
+

@@ -1,20 +1,11 @@
 {
   "examples": [
-    "cyclic-2",
-    "cyclic-3",
-    "cyclic-4",
-    "eco-2",
-    "eco-3",
-    "eco-4",
-    "noon-2",
-    "noon-3",
-    "noon-4"
+    "chandra-2.txt"
   ],
   "software": [
     {
       "runner": "groebner_jl",
       "software": "Groebner.groebner",
-      "version": "local",
       "threads": "8",
       "method": "groebner",
       "job_id_suffix": "groebner"

@@ -182,7 +182,13 @@ def load_rows(results_path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle, delimiter="\t"))
 
 
+def is_axf4_row(row: dict[str, str]) -> bool:
+    return row.get("runner", "").strip() == "axf4" or row.get("software", "").strip().startswith("axf4")
+
+
 def profile_name(row: dict[str, str]) -> str:
+    if is_axf4_row(row):
+        return row["software"]
     return f"{row['software']} {row['version']} ({row['threads']}t)"
 
 

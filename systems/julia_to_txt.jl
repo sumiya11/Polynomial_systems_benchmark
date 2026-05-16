@@ -1,11 +1,47 @@
 using AbstractAlgebra
 
+function coefficient_denominator(coefficient)
+    if coefficient isa Rational
+        return denominator(coefficient)
+    end
+    return one(ZZ)
+end
+
+function clear_denominators(poly)
+    coeffs = collect(coefficients(poly))
+    mons = collect(monomials(poly))
+    if isempty(coeffs)
+        return poly
+    end
+
+    common_denominator = foldl(lcm, map(coefficient_denominator, coeffs); init=one(ZZ))
+    if common_denominator == one(ZZ)
+        return poly
+    end
+
+    return sum((common_denominator * coefficient) * monomial for (coefficient, monomial) in zip(coeffs, mons); init=zero(parent(poly)))
+end
+
+function normalize_system_for_txt(sys)
+    if isempty(sys)
+        return sys
+    end
+
+    k = base_ring(parent(sys[1]))
+    if characteristic(k) != 0
+        return sys
+    end
+
+    return map(clear_denominators, sys)
+end
+
 function julia_to_txt(sys)
-    R = parent(sys[1])
+    normalized = normalize_system_for_txt(sys)
+    R = parent(normalized[1])
     k = base_ring(R)
     char = characteristic(k)
     vars = join(map(string, gens(R)), ", ")
-    equations = join(map(string, sys), ",\n")
+    equations = join(map(string, normalized), ",\n")
     """
     $vars
     $char

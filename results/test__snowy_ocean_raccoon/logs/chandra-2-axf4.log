@@ -1,0 +1,53 @@
+run_id: chandra-2-axf4
+track: test__snowy_ocean_raccoon
+job_id: chandra-2-axf4
+system_ref: systems/chandra/chandra.md
+input_ref: systems/chandra/txt/chandra_2.txt
+software: axf4
+version: local-copy
+runner: axf4
+threads: 8
+field: GF(32003)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 
+peak_memory_mb: 25
+status: ok
+exit_code: 0
+wall_time_seconds: 0.054135
+process_wall_time_seconds: 0.054135
+started_at_utc: 2026-05-16T14:34:21Z
+finished_at_utc: 2026-05-16T14:34:21Z
+runner_host: DESKTOP-RAOJN57
+runner_os: Windows-10-10.0.19045-SP0
+runner_machine: x86_64
+runner_cpu_count: 8
+runner_word_size: 64
+runner_python: 3.10.0
+command: "C:\projects\Alexander Demin\gb_benchmarks\axgrob\axf4.exe" -p 32003 -v [H1,H2] -t 8 C:\Users\User\AppData\Local\Temp\gbbench-axf4-mqj355zw\chandra_2.txt
+
+[stdout]
+F4 algorithm in 2 variables mod p=32003, 8 threads
+
+STEP 1
+degree=3 pairs=1/1 with pairs limit 2048
+4 x 5 with 12 non-zero, 3.0 per row
+2.333 bytes per non-zero, matrix encoded in 0.000 MB
+2 rows to reduce, blocksize 1, max threads 2, zero reductions 2
+new=1 basis=3, step time=0.008 sec
+
+STEP 2
+degree=2 pairs=2/2 with pairs limit 2048
+7 x 6 with 21 non-zero, 3.0 per row
+2.333 bytes per non-zero, matrix encoded in 0.000 MB
+4 rows to reduce, blocksize 3, max threads 2, zero reductions 2
+new=1 basis=4, step time=0.005 sec
+
+DONE inter-reduce
+4 x 4 with 12 non-zero, 3.0 per row
+2.333 bytes per non-zero, matrix encoded in 0.000 MB
+2 basis elements, 0.016 sec
+
+[stderr]
+

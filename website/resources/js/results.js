@@ -95,12 +95,22 @@ function availableTracks() {
   return EMBEDDED_EXPERIMENTS.map((experiment) => experiment.experiment_id);
 }
 
+function isAxf4Row(row) {
+  return String(row.runner || "").trim() === "axf4" || String(row.software || "").trim().startsWith("axf4");
+}
+
 function softwareNameFromRow(row) {
+  if (isAxf4Row(row)) {
+    return row.software || "";
+  }
   return `${row.software}${row.version ? ` ${row.version}` : ""}`;
 }
 
 function softwareDisplayNameFromRow(row) {
   const base = softwareNameFromRow(row);
+  if (isAxf4Row(row)) {
+    return base;
+  }
   const threads = String(row.threads || "").trim();
   return threads ? `${base} (${threads}t)` : base;
 }

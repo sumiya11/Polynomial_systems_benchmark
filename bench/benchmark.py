@@ -228,7 +228,7 @@ def output_track_paths(root: Path, output_track: str) -> tuple[Path, Path, Path]
 def machine_label_seed() -> str:
     parts = [
         platform.node(),
-        platform.system(),
+        runner_os(),
         platform.release(),
         runner_processor(),
         runner_machine(),
@@ -332,24 +332,128 @@ def parse_optional_positive_int_text(value: str | None, field_name: str) -> int 
     return normalized
 
 
+def clean_hardware_text(value: object) -> str:
+    return re.sub(r"\s+", " ", str(value or "").strip())
+
+
+def normalize_machine_architecture(value: object) -> str:
+    cleaned = clean_hardware_text(value)
+    if not cleaned:
+        return ""
+
+    lowered = cleaned.lower()
+    aliases = {
+        "amd64": "x86_64",
+        "x86_64": "x86_64",
+        "x64": "x86_64",
+        "arm64": "aarch64",
+        "aarch64": "aarch64",
+        "x86": "i686",
+        "i386": "i686",
+        "i686": "i686",
+    }
+    return aliases.get(lowered, cleaned)
+
+
+def runner_os() -> str:
+    system = clean_hardware_text(platform.system())
+    if system == "Darwin":
+        return "macOS"
+    if system:
+        return system
+    if os.name == "nt":
+        return "Windows"
+    if sys.platform.startswith("linux"):
+        return "Linux"
+    return clean_hardware_text(sys.platform)
+
+
+def _windows_cpu_brand() -> str:
+    if os.name != "nt":
+        return ""
+
+    try:
+        import winreg
+
+        with winreg.OpenKey(
+            winreg.HKEY_LOCAL_MACHINE,
+            r"HARDWARE\DESCRIPTION\System\CentralProcessor\0",
+        ) as key:
+            value, _ = winreg.QueryValueEx(key, "ProcessorNameString")
+            return clean_hardware_text(value)
+    except OSError:
+        return ""
+
+
+def _linux_cpu_brand() -> str:
+    if not sys.platform.startswith("linux"):
+        return ""
+
+    cpuinfo = Path("/proc/cpuinfo")
+    if not cpuinfo.is_file():
+        return ""
+
+    candidates: dict[str, str] = {}
+    for line in cpuinfo.read_text(encoding="utf-8", errors="replace").splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        normalized_key = key.strip().lower()
+        cleaned_value = clean_hardware_text(value)
+        if cleaned_value and normalized_key not in candidates:
+            candidates[normalized_key] = cleaned_value
+
+    for key in ("model name", "hardware", "processor"):
+        value = candidates.get(key, "")
+        if value and not value.isdigit():
+            return value
+    return ""
+
+
+def _macos_cpu_brand() -> str:
+    if sys.platform != "darwin":
+        return ""
+
+    for query in ("machdep.cpu.brand_string", "hw.model"):
+        try:
+            completed = subprocess.run(
+                ["sysctl", "-n", query],
+                capture_output=True,
+                text=True,
+                timeout=2.0,
+            )
+        except (OSError, subprocess.SubprocessError):
+            continue
+        if completed.returncode == 0:
+            value = clean_hardware_text(completed.stdout)
+            if value:
+                return value
+    return ""
+
+
+@functools.lru_cache(maxsize=1)
 def runner_processor() -> str:
     values = [
+        _windows_cpu_brand(),
+        _linux_cpu_brand(),
+        _macos_cpu_brand(),
         os.environ.get("PROCESSOR_IDENTIFIER", ""),
         platform.processor(),
         platform.uname().processor,
         platform.machine(),
     ]
     for value in values:
-        cleaned = (value or "").strip()
+        cleaned = clean_hardware_text(value)
         if cleaned:
             return cleaned
     return ""
 
 
+@functools.lru_cache(maxsize=1)
 def runner_machine() -> str:
     values = [platform.machine(), platform.uname().machine]
     for value in values:
-        cleaned = (value or "").strip()
+        cleaned = normalize_machine_architecture(value)
         if cleaned:
             return cleaned
     return ""
@@ -428,6 +532,12 @@ def groebner_jl_version() -> str:
     if probe.returncode != 0:
         return ""
     return probe.stdout.strip()
+
+
+def default_version_for_runner(runner_name: str, configured_version: str) -> str:
+    if runner_name == "groebner_jl":
+        return groebner_jl_version() or configured_version
+    return configured_version
 
 
 def ensure_groebner_runtime() -> None:
@@ -716,12 +826,40 @@ def split_instance_id(instance_id: str) -> tuple[str, str]:
     return system_id, suffix
 
 
+def main_refs_for_system(system_id: str) -> tuple[str, str, str]:
+    system_ref = f"systems/{system_id}/{system_id}.md"
+    input_ref = f"systems/{system_id}/txt/{system_id}.txt"
+    return system_id, system_ref, input_ref
+
+
 def default_refs_for_instance(instance_id: str, system_id: str | None = None) -> tuple[str, str, str]:
     inferred_system_id, suffix = split_instance_id(instance_id)
-    resolved_system_id = system_id or inferred_system_id
+    resolved_system_id = stringify_config_value(system_id).strip() or inferred_system_id
     system_ref = f"systems/{resolved_system_id}/{resolved_system_id}.md"
     input_ref = f"systems/{resolved_system_id}/txt/{resolved_system_id}_{suffix}.txt"
     return resolved_system_id, system_ref, input_ref
+
+
+@functools.lru_cache(maxsize=None)
+def default_refs_for_input_name(input_name: str) -> tuple[str, str, str]:
+    raw = stringify_config_value(input_name).strip()
+    if not raw:
+        raise ValueError("Each string example entry must be a non-empty .txt file name")
+    if not raw.lower().endswith(".txt"):
+        raise ValueError(f"String example entry '{raw}' must end with .txt")
+
+    instance_id = raw[:-4]
+    root = repo_root()
+    _, main_system_ref, main_input_ref = main_refs_for_system(instance_id)
+    main_system_path = resolve_path(root, main_system_ref)
+    main_input_path = resolve_path(root, main_input_ref)
+    if main_system_path.is_file() and main_input_path.is_file():
+        return instance_id, main_system_ref, main_input_ref
+
+    system_id, suffix = split_instance_id(instance_id)
+    system_ref = f"systems/{system_id}/{system_id}.md"
+    input_ref = f"systems/{system_id}/txt/{system_id}_{suffix}.txt"
+    return instance_id, system_ref, input_ref
 
 
 def stringify_config_value(value: object) -> str:
@@ -758,19 +896,23 @@ def resolve_track_output_layout(
 
 def normalized_example_entry(track: dict[str, object], entry: object) -> dict[str, str]:
     if isinstance(entry, str):
-        raw: dict[str, object] = {"instance_id": entry}
+        instance_id, default_system_ref, default_input_ref = default_refs_for_input_name(entry)
+        inferred_system_id = instance_id if default_input_ref.endswith(f"/{instance_id}.txt") else split_instance_id(instance_id)[0]
+        raw: dict[str, object] = {"instance_id": instance_id}
+        derived_system_ref = default_system_ref
+        derived_input_ref = default_input_ref
     elif isinstance(entry, dict):
         raw = dict(entry)
+        instance_id = stringify_config_value(raw.get("instance_id")).strip()
+        if not instance_id:
+            raise ValueError("Each example entry must define a non-empty instance_id")
+        inferred_system_id, default_system_ref, default_input_ref = default_refs_for_instance(instance_id)
+        system_id = stringify_config_value(raw.get("system_id") or inferred_system_id).strip()
+        _, derived_system_ref, derived_input_ref = default_refs_for_instance(instance_id, system_id)
     else:
         raise ValueError("Each example entry must be either a string instance id or an object")
 
-    instance_id = stringify_config_value(raw.get("instance_id")).strip()
-    if not instance_id:
-        raise ValueError("Each example entry must define a non-empty instance_id")
-
-    inferred_system_id, default_system_ref, default_input_ref = default_refs_for_instance(instance_id)
     system_id = stringify_config_value(raw.get("system_id") or inferred_system_id).strip()
-    _, derived_system_ref, derived_input_ref = default_refs_for_instance(instance_id, system_id)
 
     return {
         "instance_id": instance_id,
@@ -1090,9 +1232,10 @@ def run_job(
     started_perf = time.perf_counter()
     timeout_s = float(job["timeout_s"].strip()) if job["timeout_s"].strip() else None
     memory_limit_mb = job_memory_limit_mb(job, memory_limit_mb_override)
+    runner_name = job.get("runner", "").strip()
+    fallback_version = default_version_for_runner(runner_name, job["version"])
 
     try:
-        runner_name = job.get("runner", "").strip()
         if runner_name:
             runner = configured_runner(runner_name, axf4_binary)
             result = runner(job, root, input_path, timeout_s, memory_limit_mb)
@@ -1131,7 +1274,7 @@ def run_job(
         "system_ref": job["system_ref"],
         "input_ref": job["input_ref"],
         "software": result.get("software", job["software"]),
-        "version": result.get("version", job["version"]),
+        "version": result.get("version", fallback_version),
         "runner": result.get("runner", job.get("runner", "").strip() or "command"),
         "threads": result.get("threads", job["threads"]),
         "field": job["field"],
