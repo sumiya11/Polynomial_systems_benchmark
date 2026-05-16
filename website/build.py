@@ -21,6 +21,7 @@ SUPPORTED_EXTENSIONS = [".md"]
 TRACK_ORDER = ["test", "apply_vs_axf4"]
 SUMMARY_COLUMNS = ["profile", "cases", "solved", "wins", "geomean_ratio"]
 COLORS = ["#0b6e4f", "#c84c09", "#005f99", "#8f2d56", "#6b8e23", "#6a4c93"]
+PROFILE_MIN_BEST_TIME_SECONDS = 0.1
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WEBSITE_ROOT = Path(__file__).resolve().parent
 FALLBACK_EXPERIMENTS = {
@@ -263,9 +264,16 @@ def compute_profile(
     rows: list[dict[str, str]],
 ) -> tuple[list[float], dict[str, list[tuple[float, float]]], list[dict[str, str]], dict[str, str]]:
     valid_rows = [row for row in rows if row.get("status") == "ok" and row.get("wall_time_seconds")]
-    problems: dict[str, list[dict[str, str]]] = {}
+    solved_problems: dict[str, list[dict[str, str]]] = {}
     for row in valid_rows:
-        problems.setdefault(problem_name(row), []).append(row)
+        solved_problems.setdefault(problem_name(row), []).append(row)
+
+    problems: list[tuple[list[dict[str, str]], float]] = []
+    for problem_rows in solved_problems.values():
+        best_time = min(float(row["wall_time_seconds"]) for row in problem_rows)
+        if best_time <= PROFILE_MIN_BEST_TIME_SECONDS:
+            continue
+        problems.append((problem_rows, best_time))
 
     if not problems:
         return [1.0], {}, [], {}
@@ -275,8 +283,7 @@ def compute_profile(
     solved_by_profile: dict[str, int] = {}
     software_by_profile: dict[str, str] = {}
 
-    for problem_rows in problems.values():
-        best_time = min(float(row["wall_time_seconds"]) for row in problem_rows)
+    for problem_rows, best_time in problems:
         for row in problem_rows:
             profile = profile_name(row)
             ratio = float(row["wall_time_seconds"]) / best_time
@@ -321,6 +328,26 @@ def estimated_svg_text_width(text: str, font_size: float = 16.0) -> float:
     return max(0.0, len(text) * font_size * 0.58)
 
 
+def format_tau_tick_label(tick: float) -> str:
+    if tick < 10.0:
+        return f"{tick:g}"
+    return f"{tick:.0f}"
+
+
+def profile_x_ticks(max_tau: float) -> list[tuple[float, str]]:
+    ticks = [tick for tick in [1.0, 1.25, 1.5, 2.0, 3.0, 5.0] if tick <= max_tau]
+
+    scale = 10.0
+    while scale <= max_tau * 1.001:
+        for multiplier in (1.0, 2.0, 5.0):
+            tick = scale * multiplier
+            if tick <= max_tau * 1.001:
+                ticks.append(tick)
+        scale *= 10.0
+
+    return [(tick, format_tau_tick_label(tick)) for tick in ticks]
+
+
 def render_profile_svg(
     taus: list[float],
     series: dict[str, list[tuple[float, float]]],
@@ -359,8 +386,8 @@ def render_profile_svg(
         output_path.write_text(
             f"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {width} {height}\" role=\"img\" aria-labelledby=\"title desc\">\n"
             f"  <title id=\"title\">Performance profile</title>\n"
-            f"  <desc id=\"desc\">No successful runs were available.</desc>\n"
-            f"  <text x=\"{width / 2}\" y=\"{height / 2}\" text-anchor=\"middle\" font-family=\"Helvetica, Arial, sans-serif\" font-size=\"20\" fill=\"#444\">No successful runs available</text>\n"
+            f"  <desc id=\"desc\">No profile data was available.</desc>\n"
+            f"  <text x=\"{width / 2}\" y=\"{height / 2}\" text-anchor=\"middle\" font-family=\"Helvetica, Arial, sans-serif\" font-size=\"20\" fill=\"#444\">No profile data available</text>\n"
             f"</svg>\n",
             encoding="utf-8",
         )
@@ -383,15 +410,17 @@ def render_profile_svg(
         grid_lines.append(f'<line x1="{left}" y1="{y:.1f}" x2="{left + plot_width}" y2="{y:.1f}" stroke="#d8d2c4" stroke-width="1"/>')
         grid_lines.append(f'<text x="{left - 12}" y="{y + 5:.1f}" text-anchor="end" font-size="15" fill="#444">{y_tick:.2f}</text>')
 
-    previous_x_label = float("-inf")
-    for tick in [1.0, 1.25, 1.5, 2.0, 3.0]:
-        if tick > max_tau:
-            continue
+    previous_x_label_right = float("-inf")
+    for tick, tick_label in profile_x_ticks(max_tau):
         x = x_coord(tick)
         grid_lines.append(f'<line x1="{x:.1f}" y1="{top}" x2="{x:.1f}" y2="{top + plot_height}" stroke="#ece6da" stroke-width="1"/>')
-        if x - previous_x_label >= 36:
-            grid_lines.append(f'<text x="{x:.1f}" y="{top + plot_height + 28}" text-anchor="middle" font-size="15" fill="#444">{tick:g}</text>')
-            previous_x_label = x
+        label_half_width = estimated_svg_text_width(tick_label, font_size=15.0) / 2.0
+        if x - label_half_width <= previous_x_label_right + 8.0:
+            continue
+        grid_lines.append(
+            f'<text x="{x:.1f}" y="{top + plot_height + 28}" text-anchor="middle" font-size="15" fill="#444">{tick_label}</text>'
+        )
+        previous_x_label_right = x + label_half_width
 
     paths = []
     legend = []
@@ -428,7 +457,7 @@ def render_profile_svg(
     output_path.write_text(
         f"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {width} {height}\" role=\"img\" aria-labelledby=\"title desc\" class=\"interactive-profile-svg\">\n"
         f"  <title id=\"title\">Performance profile</title>\n"
-        f"  <desc id=\"desc\">Fraction of problems solved within a factor tau of the best runtime.</desc>\n"
+        f"  <desc id=\"desc\">Fraction of cases with best runtime above {PROFILE_MIN_BEST_TIME_SECONDS:g} seconds solved within a factor tau of the best runtime.</desc>\n"
         f"  <rect x=\"{left}\" y=\"{top}\" width=\"{plot_width}\" height=\"{plot_height}\" fill=\"none\" stroke=\"#b7ae98\" stroke-width=\"1.5\"/>\n"
         f"  {''.join(grid_lines)}\n"
         f"  {''.join(paths)}\n"
@@ -564,8 +593,8 @@ def build_track_assets(
 ) -> tuple[list[dict[str, object]], dict[str, str], dict[str, str], dict[str, str], str]:
     experiments = load_experiment_registry(build_root, build_results_dir)
     embedded_runs = {}
-    embedded_summaries = {}
-    embedded_profiles = {}
+    embedded_summaries: dict[str, str] = {}
+    embedded_profiles: dict[str, str] = {}
 
     for experiment in experiments:
         experiment_id = str(experiment["experiment_id"])
@@ -579,8 +608,6 @@ def build_track_assets(
         experiment["experiment_path"] = f"./{experiment['experiment_bundle']}"
         experiment["logs_path"] = f"./{str(experiment['logs_dir']).rstrip('/')}/index.html"
         embedded_runs[experiment_id] = runs_path.read_text(encoding="utf-8")
-        embedded_summaries[experiment_id] = summary_path.read_text(encoding="utf-8")
-        embedded_profiles[experiment_id] = svg_path.read_text(encoding="utf-8")
 
     default_id = default_experiment_id(experiments)
     if experiments:

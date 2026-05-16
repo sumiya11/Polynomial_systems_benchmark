@@ -24,6 +24,10 @@
       <div class="overview-visual">
         <div id="profileFigure" class="profile-figure">Loading profile...</div>
         <p class="profile-note">
+          <label class="visually-hidden" for="profileThreshold">Min fastest runtime</label>
+          <input id="profileThreshold" class="profile-threshold-slider" type="range" min="0" max="4" step="1" value="2">
+          <span id="profileNoteText">Profile uses only instances where the fastest successful run exceeds 0.1 s.</span>
+          <span class="profile-threshold-summary" id="profileThresholdSummary">Loading profile filter...</span>
           <a href="https://arxiv.org/abs/cs/0102001">On performance profiles: arXiv:cs/0102001</a>
         </p>
       </div>
