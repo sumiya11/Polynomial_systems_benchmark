@@ -1,0 +1,36 @@
+run_id: apply-caprasse-groebner-apply
+track: apply_vs_axf4__snowy_sky_otter
+job_id: apply-caprasse-groebner-apply
+system_ref: systems/caprasse/caprasse.md
+input_ref: systems/caprasse/txt/caprasse.txt
+software: Groebner.groebner_apply!
+version: 0.10.3
+runner: groebner_jl
+threads: 1
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 561
+status: ok
+exit_code: 0
+wall_time_seconds: 0.00029025
+process_wall_time_seconds: 1.730839
+started_at_utc: 2026-05-16T15:13:44Z
+finished_at_utc: 2026-05-16T15:13:46Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-wkmx1s9_/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/caprasse/txt/caprasse.txt --field GF(2147483647) --order degrevlex --threads 1 --method groebner_apply!
+
+[stdout]
+GBBENCH_WALL_TIME=0.00029025
+GBBENCH_BYTES=328856
+GBBENCH_VERSION=0.10.3
+
+[stderr]
+

@@ -1,0 +1,159 @@
+run_id: apply-chandra-15-axf4-t8
+track: apply_vs_axf4__snowy_sky_otter
+job_id: apply-chandra-15-axf4-t8
+system_ref: systems/chandra/chandra.md
+input_ref: systems/chandra/txt/chandra_15.txt
+software: axf4 -t 8
+version: local-copy
+runner: axf4
+threads: 8
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 
+status: timeout
+exit_code: 
+wall_time_seconds: 60.024499
+process_wall_time_seconds: 60.024499
+started_at_utc: 2026-05-16T15:23:54Z
+finished_at_utc: 2026-05-16T15:24:54Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: 
+
+[stdout]
+F4 algorithm in 15 variables mod p=2147483647, 32 threads
+
+STEP 1
+degree=3 pairs=105/105 with pairs limit 2048
+342 x 798 with 5472 non-zero, 16.0 per row
+1.250 bytes per non-zero, matrix encoded in 0.007 MB
+210 rows to reduce, blocksize 15, max threads 14, zero reductions 1
+new=105 basis=120, step time=0.155 sec
+
+STEP 2
+degree=4 pairs=938/938 with pairs limit 2048
+3269 x 3606 with 135818 non-zero, 41.5 per row
+1.341 bytes per non-zero, matrix encoded in 0.174 MB
+1876 rows to reduce, blocksize 36, max threads 53, zero reductions 1
+new=378 basis=498, step time=0.330 sec
+
+STEP 3
+degree=5 pairs=2048/3774 with pairs limit 2048
+7612 x 6868 with 552164 non-zero, 72.5 per row
+1.219 bytes per non-zero, matrix encoded in 0.642 MB
+4096 rows to reduce, blocksize 48, max threads 86, zero reductions 1
+new=495 basis=993, step time=0.582 sec
+
+STEP 4
+degree=5 pairs=1726/6679 with pairs limit 4096
+9205 x 9580 with 1089191 non-zero, 118.3 per row
+1.213 bytes per non-zero, matrix encoded in 1.260 MB
+3452 rows to reduce, blocksize 45, max threads 77, zero reductions 1
+new=354 basis=1347, step time=1.455 sec
+
+STEP 5
+degree=6 pairs=2048/9073 with pairs limit 2048
+8605 x 7583 with 1056689 non-zero, 122.8 per row
+1.188 bytes per non-zero, matrix encoded in 1.197 MB
+4096 rows to reduce, blocksize 48, max threads 86, zero reductions 1
+new=329 basis=1676, step time=1.123 sec
+
+STEP 6
+degree=6 pairs=4096/10421 with pairs limit 4096
+23114 x 22030 with 4277261 non-zero, 185.1 per row
+1.154 bytes per non-zero, matrix encoded in 4.706 MB
+8192 rows to reduce, blocksize 60, max threads 137, zero reductions 1
+new=598 basis=2274, step time=3.611 sec
+
+STEP 7
+degree=6 pairs=2929/13163 with pairs limit 8192
+23944 x 24937 with 6917595 non-zero, 288.9 per row
+1.138 bytes per non-zero, matrix encoded in 7.511 MB
+5858 rows to reduce, blocksize 54, max threads 109, zero reductions 1
+new=375 basis=2649, step time=4.136 sec
+
+STEP 8
+degree=7 pairs=2048/14965 with pairs limit 2048
+11425 x 11083 with 3737062 non-zero, 327.1 per row
+1.078 bytes per non-zero, matrix encoded in 3.841 MB
+4096 rows to reduce, blocksize 48, max threads 86, zero reductions 1
+new=233 basis=2882, step time=2.308 sec
+
+STEP 9
+degree=7 pairs=4096/15512 with pairs limit 4096
+31721 x 30953 with 14812957 non-zero, 467.0 per row
+1.089 bytes per non-zero, matrix encoded in 15.383 MB
+8192 rows to reduce, blocksize 60, max threads 137, zero reductions 1
+new=453 basis=3335, step time=6.677 sec
+
+STEP 10
+degree=7 pairs=8192/16889 with pairs limit 8192
+59532 x 53803 with 39605095 non-zero, 665.3 per row
+1.083 bytes per non-zero, matrix encoded in 40.909 MB
+16384 rows to reduce, blocksize 75, max threads 219, zero reductions 1
+new=867 basis=4202, step time=9.818 sec
+
+STEP 11
+degree=7 pairs=629/19737 with pairs limit 16384
+48317 x 57015 with 23607844 non-zero, 488.6 per row
+1.109 bytes per non-zero, matrix encoded in 24.967 MB
+1258 rows to reduce, blocksize 30, max threads 42, zero reductions 1
+new=48 basis=4250, step time=0.681 sec
+
+STEP 12
+degree=8 pairs=2048/19780 with pairs limit 2048
+21959 x 24644 with 12405424 non-zero, 564.9 per row
+1.055 bytes per non-zero, matrix encoded in 12.486 MB
+4096 rows to reduce, blocksize 48, max threads 86, zero reductions 1
+new=305 basis=4555, step time=1.312 sec
+
+STEP 13
+degree=8 pairs=4096/21516 with pairs limit 4096
+40405 x 41648 with 36928832 non-zero, 914.0 per row
+1.043 bytes per non-zero, matrix encoded in 36.739 MB
+8192 rows to reduce, blocksize 60, max threads 137, zero reductions 1
+new=319 basis=4874, step time=1.881 sec
+
+STEP 14
+degree=8 pairs=8192/21545 with pairs limit 8192
+108655 x 107250 with 99108238 non-zero, 912.1 per row
+1.064 bytes per non-zero, matrix encoded in 100.612 MB
+16384 rows to reduce, blocksize 75, max threads 219, zero reductions 1
+new=715 basis=5589, step time=5.448 sec
+
+STEP 15
+degree=8 pairs=5444/22626 with pairs limit 16384
+112097 x 114549 with 108049922 non-zero, 963.9 per row
+1.081 bytes per non-zero, matrix encoded in 111.415 MB
+10888 rows to reduce, blocksize 66, max threads 165, zero reductions 1
+new=429 basis=6018, step time=5.762 sec
+
+STEP 16
+degree=9 pairs=2048/23188 with pairs limit 2048
+44516 x 50757 with 37033309 non-zero, 831.9 per row
+1.045 bytes per non-zero, matrix encoded in 36.922 MB
+4096 rows to reduce, blocksize 48, max threads 86, zero reductions 1
+new=429 basis=6447, step time=3.267 sec
+
+STEP 17
+degree=9 pairs=4096/26717 with pairs limit 4096
+77808 x 82956 with 91542664 non-zero, 1176.5 per row
+1.044 bytes per non-zero, matrix encoded in 91.107 MB
+8192 rows to reduce, blocksize 60, max threads 137, zero reductions 1
+new=429 basis=6876, step time=5.417 sec
+
+STEP 18
+degree=9 pairs=8192/23050 with pairs limit 8192
+133583 x 133113 with 215454669 non-zero, 1612.9 per row
+1.043 bytes per non-zero, matrix encoded in 214.368 MB
+16384 rows to reduce, blocksize 75, max threads 219, zero reductions 1
+
+[stderr]
+

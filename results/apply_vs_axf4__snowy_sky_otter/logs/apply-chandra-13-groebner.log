@@ -1,0 +1,36 @@
+run_id: apply-chandra-13-groebner
+track: apply_vs_axf4__snowy_sky_otter
+job_id: apply-chandra-13-groebner
+system_ref: systems/chandra/chandra.md
+input_ref: systems/chandra/txt/chandra_13.txt
+software: Groebner.groebner
+version: 0.10.3
+runner: groebner_jl
+threads: 1
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 1775
+status: ok
+exit_code: 0
+wall_time_seconds: 11.110488183
+process_wall_time_seconds: 24.826820
+started_at_utc: 2026-05-16T15:15:14Z
+finished_at_utc: 2026-05-16T15:15:39Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-wkmx1s9_/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/chandra/txt/chandra_13.txt --field GF(2147483647) --order degrevlex --threads 1 --method groebner
+
+[stdout]
+GBBENCH_WALL_TIME=11.110488183
+GBBENCH_BYTES=14637002312
+GBBENCH_VERSION=0.10.3
+
+[stderr]
+

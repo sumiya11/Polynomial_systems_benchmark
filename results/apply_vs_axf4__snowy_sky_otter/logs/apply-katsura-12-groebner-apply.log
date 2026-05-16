@@ -1,0 +1,34 @@
+run_id: apply-katsura-12-groebner-apply
+track: apply_vs_axf4__snowy_sky_otter
+job_id: apply-katsura-12-groebner-apply
+system_ref: systems/katsura/katsura.md
+input_ref: systems/katsura/txt/katsura_12.txt
+software: Groebner.groebner_apply!
+version: 0.10.3
+runner: groebner_jl
+threads: 1
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 60
+memory_limit_mb: 8192
+peak_memory_mb: 
+status: timeout
+exit_code: 
+wall_time_seconds: 60.060268
+process_wall_time_seconds: 60.060268
+started_at_utc: 2026-05-16T15:44:01Z
+finished_at_utc: 2026-05-16T15:45:01Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: 
+
+[stdout]
+
+
+[stderr]
+
