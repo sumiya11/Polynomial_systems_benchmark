@@ -98,7 +98,7 @@
   ],
   "field": "GF(2147483647)",
   "order": "degrevlex",
-  "timeout_s": 600,
+  "timeout_s": 3600,
   "label": "Apply vs axf4",
   "sort_order": 20,
   "default_display": false
