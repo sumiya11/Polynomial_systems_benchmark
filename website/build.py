@@ -28,14 +28,12 @@ FALLBACK_EXPERIMENTS = {
     "test": {
         "label": "Baseline test experiment",
         "is_default": True,
-        "sort_order": 10,
         "definition_path": "bench/test/config.json",
         "replay_command": "python bench/benchmark.py test",
     },
     "apply_vs_axf4": {
         "label": "Apply vs axf4",
         "is_default": False,
-        "sort_order": 20,
         "definition_path": "bench/apply_vs_axf4/config.json",
         "replay_command": "python bench/benchmark.py apply_vs_axf4",
     },
@@ -44,7 +42,6 @@ EXPERIMENT_INDEX_COLUMNS = [
     "experiment_id",
     "label",
     "is_default",
-    "sort_order",
     "definition_path",
     "results_table",
     "experiment_bundle",
@@ -185,18 +182,10 @@ def truthy(value: str) -> bool:
     return value.strip().lower() in {"1", "true", "yes", "y"}
 
 
-def safe_int(value: str, default: int) -> int:
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return default
-
-
 def fallback_experiment_metadata(experiment_id: str) -> dict[str, object]:
     defaults = {
         "label": f"{experiment_id.replace('_', ' ').title()} experiment",
         "is_default": False,
-        "sort_order": TRACK_ORDER.index(experiment_id) * 10 if experiment_id in TRACK_ORDER else 9999,
         "definition_path": "",
         "replay_command": f"python bench/benchmark.py {experiment_id}",
     }
@@ -518,7 +507,6 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
                 "experiment_id": experiment_id,
                 "label": row.get("label", "").strip() or bundle_metadata.get("label", "").strip() or str(fallback["label"]),
                 "is_default": truthy(row.get("is_default", "")) if row.get("is_default", "").strip() else bool(fallback["is_default"]),
-                "sort_order": safe_int(row.get("sort_order", ""), int(fallback["sort_order"])),
                 "definition_path": row.get("definition_path", "").strip() or bundle_metadata.get("definition_path", "").strip() or str(fallback["definition_path"]),
                 "results_table": results_table,
                 "experiment_bundle": experiment_bundle,
@@ -541,7 +529,6 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
                 "experiment_id": experiment_id,
                 "label": bundle_metadata.get("label", "").strip() or str(fallback["label"]),
                 "is_default": bool(fallback["is_default"]),
-                "sort_order": int(fallback["sort_order"]),
                 "definition_path": bundle_metadata.get("definition_path", "").strip() or str(fallback["definition_path"]),
                 "results_table": results_path.relative_to(build_root).as_posix(),
                 "experiment_bundle": experiment_bundle,
@@ -551,7 +538,13 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
             }
         )
 
-    experiments.sort(key=lambda experiment: (int(experiment["sort_order"]), str(experiment["experiment_id"])))
+    track_rank = {track_name: index for index, track_name in enumerate(TRACK_ORDER)}
+    experiments.sort(
+        key=lambda experiment: (
+            track_rank.get(str(experiment["experiment_id"]), len(track_rank)),
+            str(experiment["experiment_id"]),
+        )
+    )
     return experiments
 def default_experiment_id(experiments: list[dict[str, object]]) -> str:
     for experiment in experiments:

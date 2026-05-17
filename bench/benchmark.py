@@ -104,8 +104,6 @@ TRACK_REQUIRED_KEYS = [
     "examples",
     "software",
     "label",
-    "sort_order",
-    "default_display",
 ]
 
 ALIASES = {
