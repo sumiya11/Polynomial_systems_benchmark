@@ -477,8 +477,8 @@ function formatUtcTimestamp(value) {
   return `${year}-${month}-${day} ${hours}:${minutes} UTC`;
 }
 
-function githubExperimentUrl(definitionPath) {
-  const normalized = String(definitionPath || "")
+function githubExperimentUrl(pathValue) {
+  const normalized = String(pathValue || "")
     .trim()
     .replace(/^\.\//, "")
     .replace(/\\/g, "/")
@@ -798,7 +798,7 @@ function renderCurrentTrackArtifacts(trackName, rows) {
   const machines = [...new Set(rows.map((row) => (row.runner_machine || "").trim()).filter(Boolean))].sort();
   const date = formatUtcTimestamp(latestExperimentTimestamp(rows));
   const replayCommand = info.replay_command || `python bench/benchmark.py ${trackName}`;
-  const experimentSourceUrl = githubExperimentUrl(info.definition_path);
+  const experimentSourceUrl = githubExperimentUrl(info.results_table || info.experiment_bundle || "");
   const osText = osValues[0] || hardwareFallback.os;
   const processorText = processors.join(", ");
   const cpuCountText = cpuCounts.length === 1 ? cpuCounts[0] : cpuCounts.join(", ");
@@ -830,7 +830,7 @@ function renderCurrentTrackArtifacts(trackName, rows) {
     if (experimentSourceUrl) {
       sourceRow.hidden = false;
       sourceLink.href = experimentSourceUrl;
-      sourceLink.textContent = "on github";
+      sourceLink.textContent = "Files on github";
     } else {
       sourceRow.hidden = true;
       sourceLink.removeAttribute("href");

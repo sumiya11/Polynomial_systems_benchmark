@@ -28,14 +28,12 @@ FALLBACK_EXPERIMENTS = {
     "test": {
         "label": "Baseline test experiment",
         "is_default": True,
-        "sort_order": 10,
         "definition_path": "bench/test/config.json",
         "replay_command": "python bench/benchmark.py test",
     },
     "apply_vs_axf4": {
         "label": "Apply vs axf4",
         "is_default": False,
-        "sort_order": 20,
         "definition_path": "bench/apply_vs_axf4/config.json",
         "replay_command": "python bench/benchmark.py apply_vs_axf4",
     },
@@ -44,7 +42,6 @@ EXPERIMENT_INDEX_COLUMNS = [
     "experiment_id",
     "label",
     "is_default",
-    "sort_order",
     "definition_path",
     "results_table",
     "experiment_bundle",
@@ -62,8 +59,8 @@ SITE_HEADER_HTML = """<h1>Polynomial systems benchmark</h1>
 
 <div class=\"navbar\" id=\"myNavbar\">
     <a href=\"about.html\">About</a>
-    <a href=\"index.html\">Systems</a>
-    <a href=\"results.html\">Results</a>
+    <a href=\"systems.html\">Systems</a>
+    <a href=\"index.html\">Results</a>
     <a href=\"contribute.html\">Contribute</a>
     <a href=\"https://github.com/sumiya11/Polynomial_systems_benchmark\">GitHub</a>
 
@@ -134,7 +131,7 @@ def ensure_markdown() -> None:
 def read_systems_data(systems_dir: Path) -> dict[str, dict[str, str]]:
     print(f"Reading systems from: {systems_dir.resolve().absolute()}")
     systems = {}
-    for root in sorted(path for path in systems_dir.iterdir() if path.is_dir()):
+    for root in sorted((path for path in systems_dir.iterdir() if path.is_dir()), key=lambda path: path.name.casefold()):
         system = root.name
         print(f"  Reading {system}")
         description_path = root / f"{system}{SUPPORTED_EXTENSIONS[0]}"
@@ -143,9 +140,9 @@ def read_systems_data(systems_dir: Path) -> dict[str, dict[str, str]]:
 
 
 def populate_html(systems: dict[str, dict[str, str]]) -> str:
-    print("Populating index.html")
+    print("Populating systems.html")
     body = "<hr>"
-    for system in sorted(systems):
+    for system in sorted(systems, key=str.casefold):
         content = markdown.markdown(systems[system]["content"])
         content = re.sub(
             "<h3>(.+)</h3>",
@@ -185,18 +182,10 @@ def truthy(value: str) -> bool:
     return value.strip().lower() in {"1", "true", "yes", "y"}
 
 
-def safe_int(value: str, default: int) -> int:
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return default
-
-
 def fallback_experiment_metadata(experiment_id: str) -> dict[str, object]:
     defaults = {
         "label": f"{experiment_id.replace('_', ' ').title()} experiment",
         "is_default": False,
-        "sort_order": TRACK_ORDER.index(experiment_id) * 10 if experiment_id in TRACK_ORDER else 9999,
         "definition_path": "",
         "replay_command": f"python bench/benchmark.py {experiment_id}",
     }
@@ -518,7 +507,6 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
                 "experiment_id": experiment_id,
                 "label": row.get("label", "").strip() or bundle_metadata.get("label", "").strip() or str(fallback["label"]),
                 "is_default": truthy(row.get("is_default", "")) if row.get("is_default", "").strip() else bool(fallback["is_default"]),
-                "sort_order": safe_int(row.get("sort_order", ""), int(fallback["sort_order"])),
                 "definition_path": row.get("definition_path", "").strip() or bundle_metadata.get("definition_path", "").strip() or str(fallback["definition_path"]),
                 "results_table": results_table,
                 "experiment_bundle": experiment_bundle,
@@ -541,7 +529,6 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
                 "experiment_id": experiment_id,
                 "label": bundle_metadata.get("label", "").strip() or str(fallback["label"]),
                 "is_default": bool(fallback["is_default"]),
-                "sort_order": int(fallback["sort_order"]),
                 "definition_path": bundle_metadata.get("definition_path", "").strip() or str(fallback["definition_path"]),
                 "results_table": results_path.relative_to(build_root).as_posix(),
                 "experiment_bundle": experiment_bundle,
@@ -551,7 +538,13 @@ def load_experiment_registry(build_root: Path, build_results_dir: Path) -> list[
             }
         )
 
-    experiments.sort(key=lambda experiment: (int(experiment["sort_order"]), str(experiment["experiment_id"])))
+    track_rank = {track_name: index for index, track_name in enumerate(TRACK_ORDER)}
+    experiments.sort(
+        key=lambda experiment: (
+            track_rank.get(str(experiment["experiment_id"]), len(track_rank)),
+            str(experiment["experiment_id"]),
+        )
+    )
     return experiments
 def default_experiment_id(experiments: list[dict[str, object]]) -> str:
     for experiment in experiments:
@@ -631,7 +624,7 @@ def embed_results_data(
     results_html_path.write_text(page, encoding="utf-8")
 
 
-def write_build(build_dir: Path, systems_dir: Path, sources_dir: Path, results_dir: Path, html: str) -> None:
+def write_build(build_dir: Path, systems_dir: Path, sources_dir: Path, results_dir: Path, systems_html: str) -> None:
     print(f"Writing build files to: {build_dir.resolve().absolute()}")
     if build_dir.exists():
         shutil.rmtree(build_dir)
@@ -655,15 +648,16 @@ def write_build(build_dir: Path, systems_dir: Path, sources_dir: Path, results_d
         embedded_profiles,
         default_experiment,
     )
-    (build_dir / "index.html").write_text(render_shared_page_fragments(html), encoding="utf-8")
+    (build_dir / "systems.html").write_text(render_shared_page_fragments(systems_html), encoding="utf-8")
+    shutil.copyfile(build_dir / "results.html", build_dir / "index.html")
 
 
 
 def main(systems_dir: Path, sources_dir: Path, results_dir: Path, build_dir: Path) -> None:
     ensure_markdown()
     systems = read_systems_data(systems_dir)
-    html = populate_html(systems)
-    write_build(build_dir, systems_dir, sources_dir, results_dir, html)
+    systems_html = populate_html(systems)
+    write_build(build_dir, systems_dir, sources_dir, results_dir, systems_html)
 
 
 if __name__ == "__main__":

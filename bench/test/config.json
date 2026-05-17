@@ -18,7 +18,5 @@
   "field": "GF(32003)",
   "order": "degrevlex",
   "timeout_s": 60,
-  "label": "Baseline test experiment",
-  "sort_order": 10,
-  "default_display": true
+  "label": "Baseline test experiment"
 }

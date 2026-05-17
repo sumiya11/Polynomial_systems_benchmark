@@ -1,5 +1,9 @@
 {
   "job_id_prefix": "apply",
+  "field": "GF(2147483647)",
+  "order": "degrevlex",
+  "timeout_s": 3600,
+  "label": "Apply vs axf4",
   "examples": [
     "akt_pathway.txt",
     "caprasse.txt",
@@ -95,11 +99,5 @@
       "software": "axf4 -t 8",
       "threads": "8"
     }
-  ],
-  "field": "GF(2147483647)",
-  "order": "degrevlex",
-  "timeout_s": 3600,
-  "label": "Apply vs axf4",
-  "sort_order": 20,
-  "default_display": false
+  ]
 }

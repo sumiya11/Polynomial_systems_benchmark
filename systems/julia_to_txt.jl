@@ -56,7 +56,9 @@ ranges = Dict(
     "katsura" => 2:15,
     "cyclic" => 2:15,
     "noon" => 2:15,
-    "eco" => 2:15
+    "eco" => 2:15,
+    "root" => 2:15,
+    "reimer" => 2:15,
 )
 
 function generate_many_txt()
