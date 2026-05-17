@@ -62,8 +62,8 @@ SITE_HEADER_HTML = """<h1>Polynomial systems benchmark</h1>
 
 <div class=\"navbar\" id=\"myNavbar\">
     <a href=\"about.html\">About</a>
-    <a href=\"index.html\">Systems</a>
-    <a href=\"results.html\">Results</a>
+    <a href=\"systems.html\">Systems</a>
+    <a href=\"index.html\">Results</a>
     <a href=\"contribute.html\">Contribute</a>
     <a href=\"https://github.com/sumiya11/Polynomial_systems_benchmark\">GitHub</a>
 
@@ -134,7 +134,7 @@ def ensure_markdown() -> None:
 def read_systems_data(systems_dir: Path) -> dict[str, dict[str, str]]:
     print(f"Reading systems from: {systems_dir.resolve().absolute()}")
     systems = {}
-    for root in sorted(path for path in systems_dir.iterdir() if path.is_dir()):
+    for root in sorted((path for path in systems_dir.iterdir() if path.is_dir()), key=lambda path: path.name.casefold()):
         system = root.name
         print(f"  Reading {system}")
         description_path = root / f"{system}{SUPPORTED_EXTENSIONS[0]}"
@@ -143,9 +143,9 @@ def read_systems_data(systems_dir: Path) -> dict[str, dict[str, str]]:
 
 
 def populate_html(systems: dict[str, dict[str, str]]) -> str:
-    print("Populating index.html")
+    print("Populating systems.html")
     body = "<hr>"
-    for system in sorted(systems):
+    for system in sorted(systems, key=str.casefold):
         content = markdown.markdown(systems[system]["content"])
         content = re.sub(
             "<h3>(.+)</h3>",
@@ -631,7 +631,7 @@ def embed_results_data(
     results_html_path.write_text(page, encoding="utf-8")
 
 
-def write_build(build_dir: Path, systems_dir: Path, sources_dir: Path, results_dir: Path, html: str) -> None:
+def write_build(build_dir: Path, systems_dir: Path, sources_dir: Path, results_dir: Path, systems_html: str) -> None:
     print(f"Writing build files to: {build_dir.resolve().absolute()}")
     if build_dir.exists():
         shutil.rmtree(build_dir)
@@ -655,15 +655,16 @@ def write_build(build_dir: Path, systems_dir: Path, sources_dir: Path, results_d
         embedded_profiles,
         default_experiment,
     )
-    (build_dir / "index.html").write_text(render_shared_page_fragments(html), encoding="utf-8")
+    (build_dir / "systems.html").write_text(render_shared_page_fragments(systems_html), encoding="utf-8")
+    shutil.copyfile(build_dir / "results.html", build_dir / "index.html")
 
 
 
 def main(systems_dir: Path, sources_dir: Path, results_dir: Path, build_dir: Path) -> None:
     ensure_markdown()
     systems = read_systems_data(systems_dir)
-    html = populate_html(systems)
-    write_build(build_dir, systems_dir, sources_dir, results_dir, html)
+    systems_html = populate_html(systems)
+    write_build(build_dir, systems_dir, sources_dir, results_dir, systems_html)
 
 
 if __name__ == "__main__":

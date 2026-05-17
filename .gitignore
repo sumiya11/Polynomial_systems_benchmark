@@ -1,7 +1,11 @@
 .vscode
-build/
-axgrob/
+__pycache__/
+
 venv/
 .venv/
-__pycache__/
+
+build/
+
+axgrob/
 RationalUnivariateRepresentation.jl/
+Groebner.jl/
