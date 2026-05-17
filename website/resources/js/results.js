@@ -82,6 +82,24 @@ function formatSeconds(value) {
   return number.toFixed(3);
 }
 
+function formatDuration(seconds) {
+  const totalSeconds = Math.round(Number(seconds));
+  if (!Number.isFinite(totalSeconds) || totalSeconds < 0) {
+    return "Not recorded";
+  }
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const remainingSeconds = totalSeconds % 60;
+  if (hours > 0) {
+    return `${hours}h ${String(minutes).padStart(2, "0")}m ${String(remainingSeconds).padStart(2, "0")}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${String(remainingSeconds).padStart(2, "0")}s`;
+  }
+  return `${remainingSeconds}s`;
+}
+
 function formatMemoryMb(value) {
   const number = Number(value);
   if (!Number.isFinite(number)) {
@@ -387,6 +405,60 @@ function softwareDisplayNameFromRow(row) {
   }
   const threads = String(row.threads || "").trim();
   return threads ? `${base} (${threads}t)` : base;
+}
+
+function uniqueTrimmedValues(rows, key) {
+  return [...new Set(rows.map((row) => String(row[key] || "").trim()).filter(Boolean))].sort();
+}
+
+function joinOrFallback(values, fallback = "Not recorded") {
+  return values.length ? values.join(", ") : fallback;
+}
+
+function summarizeDetails(values) {
+  if (!values.length) {
+    return "0 jobs";
+  }
+  return `${values.length} job${values.length === 1 ? "" : "s"}`;
+}
+
+function renderDetailList(rows, emptyMessage) {
+  if (!rows.length) {
+    return `<li class="muted">${escapeHtml(emptyMessage)}</li>`;
+  }
+  return rows.map((row) => {
+    const label = row.job_id || row.instance_id || row.system_id || "job";
+    const details = [row.instance_id, softwareDisplayNameFromRow(row)].filter(Boolean).join(" · ");
+    return `<li>${escapeHtml(label)}${details ? `<span class="muted"> — ${escapeHtml(details)}</span>` : ""}</li>`;
+  }).join("");
+}
+
+function renderSetupItem(label, value) {
+  return `<li class="info-row"><span class="info-label">${escapeHtml(label)}</span><span class="info-value">${escapeHtml(value)}</span></li>`;
+}
+
+function statusRows(rows, statusName) {
+  return rows.filter((row) => String(row.status || "").trim().toLowerCase() === statusName);
+}
+
+function runDurationText(rows) {
+  const timestamps = rows
+    .flatMap((row) => [row.started_at_utc, row.finished_at_utc])
+    .map((value) => String(value || "").trim())
+    .filter(Boolean)
+    .map((value) => new Date(value).getTime())
+    .filter((value) => Number.isFinite(value))
+    .sort((left, right) => left - right);
+
+  if (!timestamps.length) {
+    return "Not recorded";
+  }
+
+  const durationSeconds = (timestamps[timestamps.length - 1] - timestamps[0]) / 1000;
+  if (!Number.isFinite(durationSeconds) || durationSeconds < 0) {
+    return "Not recorded";
+  }
+  return formatDuration(durationSeconds);
 }
 
 function normalizeMachine(machine) {
@@ -763,6 +835,10 @@ function renderCurrentTrackArtifacts(trackName, rows) {
   const info = currentExperiment(trackName);
   const sourceRow = document.getElementById("currentExperimentSourceRow");
   const sourceLink = document.getElementById("currentExperimentSource");
+  const detailIds = [
+    "currentExperimentSetupSummary",
+    "currentExperimentSetup",
+  ];
   if (!info) {
     document.getElementById("currentExperimentDate").textContent = "";
     document.getElementById("currentExperimentSoftwareSummary").textContent = "";
@@ -772,6 +848,16 @@ function renderCurrentTrackArtifacts(trackName, rows) {
     document.getElementById("currentExperimentOs").textContent = "";
     document.getElementById("currentExperimentCpu").textContent = "";
     document.getElementById("currentExperimentFlags").textContent = "";
+    detailIds.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        if (element.tagName === "UL") {
+          element.innerHTML = "";
+        } else {
+          element.textContent = "";
+        }
+      }
+    });
     if (sourceRow) {
       sourceRow.hidden = true;
     }
@@ -809,6 +895,10 @@ function renderCurrentTrackArtifacts(trackName, rows) {
     ? `${cpuCountText ? `${cpuCountText} × ` : ""}${processorText}`
     : "Not recorded";
   const osLine = `${osFamilyLabel(osText)}${targetTriple ? ` (${targetTriple})` : ""}`;
+  const field = joinOrFallback(uniqueTrimmedValues(rows, "field"));
+  const order = joinOrFallback(uniqueTrimmedValues(rows, "order"));
+  const timeout = joinOrFallback(uniqueTrimmedValues(rows, "timeout_s").map((value) => `${value} s`));
+  const memoryLimit = joinOrFallback(uniqueTrimmedValues(rows, "memory_limit_mb").map((value) => `${value} MB`));
 
   document.getElementById("currentExperimentDate").textContent = date;
   document.getElementById("currentExperimentSoftwareSummary").textContent = softwareNames.length
@@ -826,6 +916,13 @@ function renderCurrentTrackArtifacts(trackName, rows) {
   document.getElementById("currentExperimentOs").textContent = osLine;
   document.getElementById("currentExperimentCpu").textContent = `${cpuLine}${wordSizeText ? `, WORD_SIZE ${wordSizeText}` : ""}`;
   document.getElementById("currentExperimentFlags").textContent = "Not recorded";
+  document.getElementById("currentExperimentDuration").textContent = runDurationText(rows);
+  document.getElementById("currentExperimentSetupSummary").textContent = "Setup";
+  document.getElementById("currentExperimentSetup").innerHTML = [
+    renderSetupItem("Field / order", `${field} / ${order}`),
+    renderSetupItem("Timeout", timeout),
+    renderSetupItem("Memory limit", memoryLimit),
+  ].join("");
   if (sourceRow && sourceLink) {
     if (experimentSourceUrl) {
       sourceRow.hidden = false;

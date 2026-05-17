@@ -40,8 +40,8 @@
               <span class="info-value" id="currentExperimentDate">Loading...</span>
             </li>
             <li class="info-row">
-              <span class="info-label">Uploaded by</span>
-              <a class="list-link" id="currentExperimentUploader" href="https://github.com/sumiya11">github.com/sumiya11</a>
+              <span class="info-label">Duration</span>
+              <span class="info-value" id="currentExperimentDuration">Loading...</span>
             </li>
             <li class="info-row" id="currentExperimentSourceRow" hidden>
               <span class="info-label">Files</span>
@@ -52,6 +52,13 @@
         <div class="sidebar-section">
           <h3>Benchmark scope</h3>
           <ul class="info-list">
+            <li class="info-row info-row-block">
+              <span class="info-label">Setup</span>
+              <details class="instance-details">
+                <summary id="currentExperimentSetupSummary">Setup</summary>
+                <ul class="compact-list" id="currentExperimentSetup"></ul>
+              </details>
+            </li>
             <li class="info-row info-row-block">
               <span class="info-label">Software</span>
               <details class="instance-details">
