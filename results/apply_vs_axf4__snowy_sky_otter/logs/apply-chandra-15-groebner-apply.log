@@ -10,25 +10,27 @@ threads: 1
 field: GF(2147483647)
 order: degrevlex
 hardware_track: 
-timeout_s: 600
-memory_limit_mb: 16384
-peak_memory_mb: 
-status: timeout
-exit_code: 
-wall_time_seconds: 600.099923
-process_wall_time_seconds: 600.099923
-started_at_utc: 2026-05-16T17:02:36Z
-finished_at_utc: 2026-05-16T17:12:36Z
+timeout_s: 3600
+memory_limit_mb: 32768
+peak_memory_mb: 23701
+status: ok
+exit_code: 0
+wall_time_seconds: 106.769680999
+process_wall_time_seconds: 1938.016484
+started_at_utc: 2026-05-16T20:20:05Z
+finished_at_utc: 2026-05-16T20:52:23Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: 
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-l6964cru/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/chandra/txt/chandra_15.txt --field GF(2147483647) --order degrevlex --threads 1 --method groebner_apply!
 
 [stdout]
-
+GBBENCH_WALL_TIME=106.769680999
+GBBENCH_BYTES=208450787968
+GBBENCH_VERSION=0.10.3
 
 [stderr]
 

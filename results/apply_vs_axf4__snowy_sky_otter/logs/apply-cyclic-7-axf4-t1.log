@@ -10,102 +10,102 @@ threads: 1
 field: GF(2147483647)
 order: degrevlex
 hardware_track: 
-timeout_s: 600
-memory_limit_mb: 16384
-peak_memory_mb: 55
+timeout_s: 3600
+memory_limit_mb: 32768
+peak_memory_mb: 52
 status: ok
 exit_code: 0
-wall_time_seconds: 0.148014
-process_wall_time_seconds: 0.148014
-started_at_utc: 2026-05-16T17:24:56Z
-finished_at_utc: 2026-05-16T17:24:56Z
+wall_time_seconds: 0.308734
+process_wall_time_seconds: 0.308734
+started_at_utc: 2026-05-16T21:26:28Z
+finished_at_utc: 2026-05-16T21:26:29Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [z1,z2,z3,z4,z5,z6,z7] -t 1 /tmp/gbbench-axf4-85ffgac9/cyclic_7.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [z1,z2,z3,z4,z5,z6,z7] -t 1 /tmp/gbbench-axf4-efhtqx6h/cyclic_7.txt
 
 [stdout]
-F4 algorithm in 7 variables mod p=2147483647, 32 threads
+F4 algorithm in 7 variables mod p=2147483647, 1 threads
 
 STEP 1
 degree=2 pairs=1/6 with pairs limit 2048
 4 x 16 with 28 non-zero, 7.0 per row
 1.571 bytes per non-zero, matrix encoded in 0.000 MB
 2 rows to reduce, blocksize 1, max threads 2, zero reductions 1
-new=1 basis=8, step time=0.003 sec
+new=1 basis=8, step time=0.001 sec
 
 STEP 2
 degree=3 pairs=1/5 with pairs limit 2048
 7 x 31 with 59 non-zero, 8.4 per row
 1.475 bytes per non-zero, matrix encoded in 0.000 MB
 2 rows to reduce, blocksize 1, max threads 2, zero reductions 1
-new=1 basis=9, step time=0.002 sec
+new=1 basis=9, step time=0.000 sec
 
 STEP 3
 degree=4 pairs=2/5 with pairs limit 2048
 17 x 75 with 209 non-zero, 12.3 per row
 1.325 bytes per non-zero, matrix encoded in 0.000 MB
 4 rows to reduce, blocksize 3, max threads 2, zero reductions 1
-new=2 basis=11, step time=0.003 sec
+new=2 basis=11, step time=0.000 sec
 
 STEP 4
 degree=5 pairs=4/6 with pairs limit 2048
 45 x 142 with 829 non-zero, 18.4 per row
 1.217 bytes per non-zero, matrix encoded in 0.001 MB
 8 rows to reduce, blocksize 6, max threads 2, zero reductions 1
-new=3 basis=14, step time=0.002 sec
+new=3 basis=14, step time=0.001 sec
 
 STEP 5
 degree=6 pairs=9/10 with pairs limit 2048
 86 x 243 with 2695 non-zero, 31.3 per row
 1.128 bytes per non-zero, matrix encoded in 0.003 MB
 18 rows to reduce, blocksize 6, max threads 3, zero reductions 1
-new=7 basis=21, step time=0.012 sec
+new=7 basis=21, step time=0.001 sec
 
 STEP 6
 degree=7 pairs=22/22 with pairs limit 2048
 181 x 404 with 9287 non-zero, 51.3 per row
 1.078 bytes per non-zero, matrix encoded in 0.010 MB
 44 rows to reduce, blocksize 9, max threads 5, zero reductions 1
-new=13 basis=34, step time=0.005 sec
+new=13 basis=34, step time=0.001 sec
 
 STEP 7
 degree=8 pairs=47/47 with pairs limit 2048
 335 x 591 with 27756 non-zero, 82.9 per row
 1.048 bytes per non-zero, matrix encoded in 0.028 MB
 94 rows to reduce, blocksize 12, max threads 8, zero reductions 1
-new=24 basis=58, step time=0.006 sec
+new=24 basis=58, step time=0.003 sec
 
 STEP 8
 degree=9 pairs=98/98 with pairs limit 2048
 575 x 788 with 61784 non-zero, 107.5 per row
 1.037 bytes per non-zero, matrix encoded in 0.061 MB
 196 rows to reduce, blocksize 15, max threads 14, zero reductions 1
-new=39 basis=97, step time=0.006 sec
+new=39 basis=97, step time=0.008 sec
 
 STEP 9
 degree=10 pairs=164/164 with pairs limit 2048
 932 x 1012 with 123701 non-zero, 132.7 per row
 1.030 bytes per non-zero, matrix encoded in 0.122 MB
 328 rows to reduce, blocksize 18, max threads 19, zero reductions 1
-new=52 basis=149, step time=0.007 sec
+new=52 basis=149, step time=0.021 sec
 
 STEP 10
 degree=11 pairs=229/229 with pairs limit 2048
 1154 x 1105 with 169549 non-zero, 146.9 per row
 1.027 bytes per non-zero, matrix encoded in 0.166 MB
 458 rows to reduce, blocksize 21, max threads 22, zero reductions 1
-new=62 basis=211, step time=0.007 sec
+new=62 basis=211, step time=0.029 sec
 
 STEP 11
 degree=5 pairs=4/298 with pairs limit 2048
 39 x 161 with 1219 non-zero, 31.3 per row
 1.128 bytes per non-zero, matrix encoded in 0.001 MB
 8 rows to reduce, blocksize 6, max threads 2, zero reductions 1
-new=4 basis=215, step time=0.002 sec
+new=4 basis=215, step time=0.001 sec
 
 STEP 12
 degree=6 pairs=15/305 with pairs limit 2048
@@ -119,103 +119,103 @@ degree=7 pairs=35/336 with pairs limit 2048
 253 x 457 with 20068 non-zero, 79.3 per row
 1.050 bytes per non-zero, matrix encoded in 0.020 MB
 70 rows to reduce, blocksize 12, max threads 6, zero reductions 1
-new=15 basis=235, step time=0.003 sec
+new=15 basis=235, step time=0.005 sec
 
 STEP 14
 degree=8 pairs=77/373 with pairs limit 2048
 522 x 690 with 52888 non-zero, 101.3 per row
 1.039 bytes per non-zero, matrix encoded in 0.052 MB
 154 rows to reduce, blocksize 15, max threads 11, zero reductions 1
-new=20 basis=250, step time=0.005 sec
+new=20 basis=250, step time=0.010 sec
 
 STEP 15
 degree=9 pairs=109/395 with pairs limit 2048
 699 x 831 with 87006 non-zero, 124.5 per row
 1.032 bytes per non-zero, matrix encoded in 0.086 MB
 218 rows to reduce, blocksize 18, max threads 13, zero reductions 1
-new=23 basis=263, step time=0.004 sec
+new=23 basis=263, step time=0.014 sec
 
 STEP 16
 degree=10 pairs=136/392 with pairs limit 2048
 930 x 1025 with 129376 non-zero, 139.1 per row
 1.029 bytes per non-zero, matrix encoded in 0.127 MB
 272 rows to reduce, blocksize 18, max threads 16, zero reductions 1
-new=34 basis=284, step time=0.005 sec
+new=34 basis=284, step time=0.020 sec
 
 STEP 17
 degree=11 pairs=196/319 with pairs limit 2048
 1004 x 916 with 152753 non-zero, 152.1 per row
 1.026 bytes per non-zero, matrix encoded in 0.150 MB
 392 rows to reduce, blocksize 21, max threads 19, zero reductions 1
-new=40 basis=289, step time=0.006 sec
+new=40 basis=289, step time=0.023 sec
 
 STEP 18
 degree=12 pairs=313/313 with pairs limit 2048
 1346 x 1040 with 209244 non-zero, 155.5 per row
 1.026 bytes per non-zero, matrix encoded in 0.205 MB
 626 rows to reduce, blocksize 24, max threads 27, zero reductions 1
-new=70 basis=331, step time=0.009 sec
+new=70 basis=331, step time=0.035 sec
 
 STEP 19
 degree=6 pairs=114/409 with pairs limit 2048
 443 x 382 with 40347 non-zero, 91.1 per row
 1.044 bytes per non-zero, matrix encoded in 0.040 MB
 228 rows to reduce, blocksize 18, max threads 13, zero reductions 1
-new=35 basis=325, step time=0.005 sec
+new=35 basis=325, step time=0.010 sec
 
 STEP 20
 degree=7 pairs=159/512 with pairs limit 2048
 676 x 491 with 72162 non-zero, 106.7 per row
 1.037 bytes per non-zero, matrix encoded in 0.071 MB
 318 rows to reduce, blocksize 18, max threads 18, zero reductions 1
-new=1 basis=316, step time=0.003 sec
+new=1 basis=316, step time=0.009 sec
 
 STEP 21
 degree=8 pairs=30/359 with pairs limit 2048
 527 x 604 with 50868 non-zero, 96.5 per row
 1.041 bytes per non-zero, matrix encoded in 0.051 MB
 60 rows to reduce, blocksize 9, max threads 7, zero reductions 1
-new=5 basis=302, step time=0.004 sec
+new=5 basis=302, step time=0.007 sec
 
 STEP 22
 degree=9 pairs=63/357 with pairs limit 2048
 894 x 914 with 83460 non-zero, 93.4 per row
 1.043 bytes per non-zero, matrix encoded in 0.083 MB
 126 rows to reduce, blocksize 15, max threads 9, zero reductions 1
-new=14 basis=291, step time=0.004 sec
+new=14 basis=291, step time=0.011 sec
 
 STEP 23
 degree=10 pairs=118/328 with pairs limit 2048
 685 x 610 with 72661 non-zero, 106.1 per row
 1.038 bytes per non-zero, matrix encoded in 0.072 MB
 236 rows to reduce, blocksize 18, max threads 14, zero reductions 1
-new=29 basis=282, step time=0.004 sec
+new=29 basis=282, step time=0.012 sec
 
 STEP 24
 degree=11 pairs=210/251 with pairs limit 2048
 895 x 655 with 98250 non-zero, 109.8 per row
 1.036 bytes per non-zero, matrix encoded in 0.097 MB
 420 rows to reduce, blocksize 21, max threads 20, zero reductions 1
-new=48 basis=282, step time=0.004 sec
+new=48 basis=282, step time=0.017 sec
 
 STEP 25
 degree=12 pairs=279/279 with pairs limit 2048
 815 x 424 with 95604 non-zero, 117.3 per row
 1.034 bytes per non-zero, matrix encoded in 0.094 MB
 558 rows to reduce, blocksize 24, max threads 24, zero reductions 1
-new=35 basis=252, step time=0.006 sec
+new=35 basis=252, step time=0.018 sec
 
 STEP 26
 degree=13 pairs=175/175 with pairs limit 2048
 615 x 397 with 70294 non-zero, 114.3 per row
 1.035 bytes per non-zero, matrix encoded in 0.069 MB
 350 rows to reduce, blocksize 21, max threads 17, zero reductions 1
-new=0 basis=213, step time=0.004 sec
+new=0 basis=213, step time=0.008 sec
 
 DONE inter-reduce
 418 x 1133 with 53942 non-zero, 129.0 per row
 1.051 bytes per non-zero, matrix encoded in 0.054 MB
-209 basis elements, 0.127 sec
+209 basis elements, 0.277 sec
 
 [stderr]
 
