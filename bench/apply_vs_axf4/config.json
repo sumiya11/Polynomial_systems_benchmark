@@ -71,29 +71,23 @@
       "runner": "groebner_jl",
       "software": "Groebner.groebner",
       "threads": "1",
-      "method": "groebner",
-      "job_id_suffix": "groebner"
+      "method": "groebner"
     },
     {
       "runner": "groebner_jl",
       "software": "Groebner.groebner_apply!",
       "threads": "1",
-      "method": "groebner_apply!",
-      "job_id_suffix": "groebner-apply"
+      "method": "groebner_apply!"
     },
     {
       "runner": "axf4",
       "software": "axf4 -t 1",
-      "version": "local-copy",
-      "threads": "1",
-      "job_id_suffix": "axf4-t1"
+      "threads": "1"
     },
     {
       "runner": "axf4",
       "software": "axf4 -t 8",
-      "version": "local-copy",
-      "threads": "8",
-      "job_id_suffix": "axf4-t8"
+      "threads": "8"
     }
   ],
   "field": "GF(2147483647)",

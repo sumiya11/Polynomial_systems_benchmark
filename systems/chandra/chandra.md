@@ -4,9 +4,8 @@ Chandrasekhar H-equation benchmark family.
 
 - Keywords: system solving.
 - Comments:
-    - n variables, dimension is 0, mixed volume is 2^(n-1).
-    - PolynomialTestSystems.jl fixes the Chandrasekhar parameter c to 0.51234 for this benchmark family.
-    - Groebner.jl benchmarks use a corresponding `chandran(n)` generator for the same family.
+    - n variables, dimension is 0.
+    - PolynomialTestSystems.jl fixes the parameter c to 0.51234.
 - References:
     - Laureano Gonzalez-Vega: *Some examples on problem solving by using the symbolic viewpoint when dealing with polynomial systems of equations*. In *Computer Algebra in Science and Engineering*, editors J. Fleischer, J. Grabmeier, F.W. Hehl and W. Kuechlin, pages 102-116, World Scientific Publishing, 1995.
     - S. Chandrasekhar: *Radiative Transfer*. Dover, New York, 1960.

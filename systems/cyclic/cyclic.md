@@ -4,9 +4,7 @@ Cyclic n-roots.
 
 - Keywords: system solving.
 - Comments: 
-    - n variables, dimension is --, degree is --.
-- Timings:
-    - cyclic-10 modulo 2^30+3 in deg-rev-lex. 27 minutes using Groebner.jl with 16 threads on Intel i9-13900. GB has 5690 equations, with roughly 20e6 monomials, 37,136 unique monomials. Seems to agree with [[1]](https://arxiv.org/abs/1903.12427). Reported by Alexander Demin on Feb 1, 2025.
+    - n variables.
 - References:
     - Göran Björck and Ralf Fröberg:
     *A faster way to count the solutions of inhomogeneous systems
