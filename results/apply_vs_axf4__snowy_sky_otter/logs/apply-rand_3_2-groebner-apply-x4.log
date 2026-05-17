@@ -1,0 +1,36 @@
+run_id: apply-rand_3_2-groebner-apply-x4
+track: apply_vs_axf4__snowy_sky_otter
+job_id: apply-rand_3_2-groebner-apply-x4
+system_ref: systems/rand_3_2/rand_3_2.md
+input_ref: systems/rand_3_2/txt/rand_3_2.txt
+software: Groebner.groebner_apply! x4
+version: 0.10.3
+runner: groebner_jl
+threads: 1
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 3600
+memory_limit_mb: 32768
+peak_memory_mb: 588
+status: ok
+exit_code: 0
+wall_time_seconds: 0.00255945375
+process_wall_time_seconds: 2.874709
+started_at_utc: 2026-05-17T14:46:57Z
+finished_at_utc: 2026-05-17T14:47:00Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-asyd09nm/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/rand_3_2/txt/rand_3_2.txt --field GF(2147483647) --order degrevlex --threads 1 --method "groebner_apply! x4"
+
+[stdout]
+GBBENCH_WALL_TIME=0.00255945375
+GBBENCH_BYTES=242592
+GBBENCH_VERSION=0.10.3
+
+[stderr]
+

@@ -1,0 +1,36 @@
+run_id: apply-re5_sq_a-groebner-apply-x4
+track: apply_vs_axf4__snowy_sky_otter
+job_id: apply-re5_sq_a-groebner-apply-x4
+system_ref: systems/re5_sq_a/re5_sq_a.md
+input_ref: systems/re5_sq_a/txt/re5_sq_a.txt
+software: Groebner.groebner_apply! x4
+version: 0.10.3
+runner: groebner_jl
+threads: 1
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 3600
+memory_limit_mb: 32768
+peak_memory_mb: 2731
+status: ok
+exit_code: 0
+wall_time_seconds: 1.45083083675
+process_wall_time_seconds: 74.418927
+started_at_utc: 2026-05-17T14:48:36Z
+finished_at_utc: 2026-05-17T14:49:51Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-asyd09nm/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/re5_sq_a/txt/re5_sq_a.txt --field GF(2147483647) --order degrevlex --threads 1 --method "groebner_apply! x4"
+
+[stdout]
+GBBENCH_WALL_TIME=1.45083083675
+GBBENCH_BYTES=2513336408
+GBBENCH_VERSION=0.10.3
+
+[stderr]
+

@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 40
 status: ok
 exit_code: 0
-wall_time_seconds: 0.026317
-process_wall_time_seconds: 0.026317
-started_at_utc: 2026-05-16T21:26:24Z
-finished_at_utc: 2026-05-16T21:26:24Z
+wall_time_seconds: 0.026689
+process_wall_time_seconds: 0.026689
+started_at_utc: 2026-05-17T12:14:58Z
+finished_at_utc: 2026-05-17T12:14:58Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [z1,z2,z3,z4,z5,z6] -t 1 /tmp/gbbench-axf4-jjqv6nvw/cyclic_6.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [z1,z2,z3,z4,z5,z6] -t 1 /tmp/gbbench-axf4-fisaunb6/cyclic_6.txt
 
 [stdout]
 F4 algorithm in 6 variables mod p=2147483647, 1 threads
@@ -84,7 +84,7 @@ degree=9 pairs=51/51 with pairs limit 2048
 196 x 174 with 7560 non-zero, 38.6 per row
 1.104 bytes per non-zero, matrix encoded in 0.008 MB
 102 rows to reduce, blocksize 12, max threads 9, zero reductions 1
-new=17 basis=65, step time=0.002 sec
+new=17 basis=65, step time=0.001 sec
 
 STEP 9
 degree=4 pairs=9/70 with pairs limit 2048
@@ -119,7 +119,7 @@ degree=8 pairs=30/46 with pairs limit 2048
 121 x 96 with 3376 non-zero, 27.9 per row
 1.143 bytes per non-zero, matrix encoded in 0.004 MB
 60 rows to reduce, blocksize 9, max threads 7, zero reductions 1
-new=9 basis=67, step time=0.001 sec
+new=9 basis=67, step time=0.000 sec
 
 STEP 14
 degree=9 pairs=49/49 with pairs limit 2048
@@ -159,7 +159,7 @@ new=0 basis=47, step time=0.000 sec
 DONE inter-reduce
 91 x 200 with 2349 non-zero, 25.8 per row
 1.155 bytes per non-zero, matrix encoded in 0.003 MB
-45 basis elements, 0.011 sec
+45 basis elements, 0.012 sec
 
 [stderr]
 

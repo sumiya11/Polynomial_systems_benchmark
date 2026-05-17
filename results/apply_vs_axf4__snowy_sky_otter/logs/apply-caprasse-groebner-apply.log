@@ -12,24 +12,24 @@ order: degrevlex
 hardware_track: 
 timeout_s: 3600
 memory_limit_mb: 32768
-peak_memory_mb: 561
+peak_memory_mb: 549
 status: ok
 exit_code: 0
-wall_time_seconds: 0.000288431
-process_wall_time_seconds: 1.740436
-started_at_utc: 2026-05-16T19:53:27Z
-finished_at_utc: 2026-05-16T19:53:29Z
+wall_time_seconds: 9.1516e-5
+process_wall_time_seconds: 1.588490
+started_at_utc: 2026-05-17T10:53:51Z
+finished_at_utc: 2026-05-17T10:53:52Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-l6964cru/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/caprasse/txt/caprasse.txt --field GF(2147483647) --order degrevlex --threads 1 --method groebner_apply!
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-asyd09nm/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/caprasse/txt/caprasse.txt --field GF(2147483647) --order degrevlex --threads 1 --method groebner_apply!
 
 [stdout]
-GBBENCH_WALL_TIME=0.000288431
-GBBENCH_BYTES=328824
+GBBENCH_WALL_TIME=9.1516e-5
+GBBENCH_BYTES=103576
 GBBENCH_VERSION=0.10.3
 
 [stderr]

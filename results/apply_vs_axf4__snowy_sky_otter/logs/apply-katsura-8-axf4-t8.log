@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 57
 status: ok
 exit_code: 0
-wall_time_seconds: 0.060935
-process_wall_time_seconds: 0.060935
-started_at_utc: 2026-05-16T22:59:04Z
-finished_at_utc: 2026-05-16T22:59:04Z
+wall_time_seconds: 0.044415
+process_wall_time_seconds: 0.044415
+started_at_utc: 2026-05-17T13:44:48Z
+finished_at_utc: 2026-05-17T13:44:48Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x0,x1,x2,x3,x4,x5,x6,x7,x8] -t 8 /tmp/gbbench-axf4-kq0oki40/katsura_8.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x0,x1,x2,x3,x4,x5,x6,x7,x8] -t 8 /tmp/gbbench-axf4-jb58dn54/katsura_8.txt
 
 [stdout]
 F4 algorithm in 9 variables mod p=2147483647, 8 threads
@@ -35,14 +35,14 @@ degree=2 pairs=2/11 with pairs limit 2048
 20 x 55 with 184 non-zero, 9.2 per row
 1.435 bytes per non-zero, matrix encoded in 0.000 MB
 4 rows to reduce, blocksize 3, max threads 2, zero reductions 1
-new=2 basis=11, step time=0.002 sec
+new=2 basis=11, step time=0.001 sec
 
 STEP 2
 degree=3 pairs=12/12 with pairs limit 2048
 130 x 208 with 1478 non-zero, 11.4 per row
 1.352 bytes per non-zero, matrix encoded in 0.002 MB
 24 rows to reduce, blocksize 6, max threads 4, zero reductions 1
-new=10 basis=20, step time=0.003 sec
+new=10 basis=20, step time=0.002 sec
 
 STEP 3
 degree=4 pairs=47/47 with pairs limit 2048
@@ -63,7 +63,7 @@ degree=6 pairs=236/236 with pairs limit 2048
 2073 x 1882 with 123803 non-zero, 59.7 per row
 1.106 bytes per non-zero, matrix encoded in 0.131 MB
 472 rows to reduce, blocksize 21, max threads 23, zero reductions 1
-new=35 basis=114, step time=0.003 sec
+new=35 basis=114, step time=0.005 sec
 
 STEP 6
 degree=7 pairs=239/239 with pairs limit 2048

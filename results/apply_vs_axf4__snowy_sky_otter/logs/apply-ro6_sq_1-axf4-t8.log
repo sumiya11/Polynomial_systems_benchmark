@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 41
 status: ok
 exit_code: 0
-wall_time_seconds: 0.025362
-process_wall_time_seconds: 0.025362
-started_at_utc: 2026-05-17T00:09:22Z
-finished_at_utc: 2026-05-17T00:09:22Z
+wall_time_seconds: 0.027606
+process_wall_time_seconds: 0.027606
+started_at_utc: 2026-05-17T14:50:47Z
+finished_at_utc: 2026-05-17T14:50:47Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x1,x2,x3,x4,x5,x6] -t 8 /tmp/gbbench-axf4-7w1bbt0v/ro6_sq_1.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x1,x2,x3,x4,x5,x6] -t 8 /tmp/gbbench-axf4-wgw2i02o/ro6_sq_1.txt
 
 [stdout]
 F4 algorithm in 6 variables mod p=2147483647, 8 threads
@@ -124,7 +124,7 @@ new=0 basis=24, step time=0.001 sec
 DONE inter-reduce
 42 x 396 with 1092 non-zero, 26.0 per row
 1.190 bytes per non-zero, matrix encoded in 0.001 MB
-21 basis elements, 0.011 sec
+21 basis elements, 0.012 sec
 
 [stderr]
 

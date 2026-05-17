@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 45
 status: ok
 exit_code: 0
-wall_time_seconds: 0.051628
-process_wall_time_seconds: 0.051628
-started_at_utc: 2026-05-16T21:48:55Z
-finished_at_utc: 2026-05-16T21:48:55Z
+wall_time_seconds: 0.051977
+process_wall_time_seconds: 0.051977
+started_at_utc: 2026-05-17T12:39:10Z
+finished_at_utc: 2026-05-17T12:39:10Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [f1,f2,f3,f4,f5,f6] -t 8 /tmp/gbbench-axf4-1prnrhwj/henrion6.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [f1,f2,f3,f4,f5,f6] -t 8 /tmp/gbbench-axf4-u6minbap/henrion6.txt
 
 [stdout]
 F4 algorithm in 6 variables mod p=2147483647, 8 threads
@@ -91,7 +91,7 @@ degree=10 pairs=30/38 with pairs limit 2048
 717 x 1281 with 55508 non-zero, 77.4 per row
 1.052 bytes per non-zero, matrix encoded in 0.056 MB
 60 rows to reduce, blocksize 9, max threads 7, zero reductions 1
-new=11 basis=40, step time=0.001 sec
+new=11 basis=40, step time=0.002 sec
 
 STEP 10
 degree=11 pairs=42/52 with pairs limit 2048
@@ -133,19 +133,19 @@ degree=16 pairs=16/16 with pairs limit 2048
 1104 x 1790 with 149055 non-zero, 135.0 per row
 1.032 bytes per non-zero, matrix encoded in 0.147 MB
 32 rows to reduce, blocksize 9, max threads 4, zero reductions 1
-new=1 basis=90, step time=0.001 sec
+new=1 basis=90, step time=0.002 sec
 
 STEP 16
 degree=17 pairs=4/4 with pairs limit 2048
 1181 x 1892 with 148966 non-zero, 126.1 per row
 1.034 bytes per non-zero, matrix encoded in 0.147 MB
 8 rows to reduce, blocksize 6, max threads 2, zero reductions 1
-new=0 basis=90, step time=0.001 sec
+new=0 basis=90, step time=0.002 sec
 
 DONE inter-reduce
 180 x 805 with 67222 non-zero, 373.5 per row
 1.011 bytes per non-zero, matrix encoded in 0.065 MB
-90 basis elements, 0.021 sec
+90 basis elements, 0.027 sec
 
 [stderr]
 
