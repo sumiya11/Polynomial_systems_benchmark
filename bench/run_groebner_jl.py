@@ -71,7 +71,7 @@ end
 
 function build_system(variable_names, polynomials, base_ring; internal_ordering_name=nothing)
     if internal_ordering_name === nothing
-        ring, generators = polynomial_ring(base_ring, variable_names)
+        ring, generators = polynomial_ring(base_ring, variable_names; internal_ordering=:degrevlex)
     else
         ring, generators = polynomial_ring(base_ring, variable_names, internal_ordering=internal_ordering_name)
     end
@@ -103,27 +103,15 @@ if method_name == "groebner"
     groebner(system, ordering=ordering, tasks=thread_flag(thread_count))
     timing = @timed groebner(system, ordering=ordering, tasks=thread_flag(thread_count))
 elseif method_name in ("groebner_apply", "groebner_apply!", "apply", "apply!")
-    warm_trace, _ = groebner_learn(system, ordering=ordering, tasks=thread_flag(thread_count))
-    groebner_apply!(warm_trace, system)
-
     trace, _ = groebner_learn(system, ordering=ordering, tasks=thread_flag(thread_count))
+    groebner_apply!(trace, system)
     timing = @timed groebner_apply!(trace, system)
-elseif method_name in ("groebner_apply_avg4", "groebner_apply!_avg4", "apply_avg4", "apply!_avg4")
-    _, batch_system = build_system(
-        variable_names,
-        polynomials,
-        base_ring,
-        internal_ordering_name=resolve_internal_ordering(order_name),
-    )
-
-    warm_systems = ntuple(_ -> deepcopy(batch_system), 4)
-    warm_trace, _ = groebner_learn(batch_system, tasks=thread_flag(thread_count))
-    groebner_apply!(warm_trace, warm_systems)
-
-    systems = ntuple(_ -> deepcopy(batch_system), 4)
-    trace, _ = groebner_learn(batch_system, tasks=thread_flag(thread_count))
+elseif method_name in ("groebner_apply! x4",)
+    systems = ntuple(_ -> deepcopy(system), 4)
+    trace, _ = groebner_learn(system, ordering=ordering, tasks=thread_flag(thread_count))
+    groebner_apply!(trace, systems)
     timed = @timed groebner_apply!(trace, systems)
-    timing = (; time=timed.time / 4, bytes=timed.bytes ÷ 4)
+    timing = (; time=timed.time / 4, bytes=timed.bytes)
 else
     error("unsupported Groebner.jl method: $(method_name)")
 end

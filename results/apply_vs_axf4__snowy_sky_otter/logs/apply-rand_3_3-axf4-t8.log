@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 23
 status: ok
 exit_code: 0
-wall_time_seconds: 0.010297
-process_wall_time_seconds: 0.010297
-started_at_utc: 2026-05-17T00:05:43Z
-finished_at_utc: 2026-05-17T00:05:43Z
+wall_time_seconds: 0.013658
+process_wall_time_seconds: 0.013658
+started_at_utc: 2026-05-17T14:47:06Z
+finished_at_utc: 2026-05-17T14:47:06Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x,y,z] -t 8 /tmp/gbbench-axf4-3mkdpsd_/rand_3_3.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x,y,z] -t 8 /tmp/gbbench-axf4-74i0d5on/rand_3_3.txt
 
 [stdout]
 F4 algorithm in 3 variables mod p=2147483647, 8 threads
@@ -42,7 +42,7 @@ degree=4 pairs=2/2 with pairs limit 2048
 13 x 34 with 242 non-zero, 18.6 per row
 1.215 bytes per non-zero, matrix encoded in 0.000 MB
 4 rows to reduce, blocksize 3, max threads 2, zero reductions 1
-new=2 basis=5, step time=0.000 sec
+new=2 basis=5, step time=0.001 sec
 
 STEP 3
 degree=5 pairs=3/3 with pairs limit 2048

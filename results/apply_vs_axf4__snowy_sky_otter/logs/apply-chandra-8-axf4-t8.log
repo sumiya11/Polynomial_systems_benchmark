@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 51
 status: ok
 exit_code: 0
-wall_time_seconds: 0.027791
-process_wall_time_seconds: 0.027791
-started_at_utc: 2026-05-16T21:25:30Z
-finished_at_utc: 2026-05-16T21:25:30Z
+wall_time_seconds: 0.031966
+process_wall_time_seconds: 0.031966
+started_at_utc: 2026-05-17T12:13:38Z
+finished_at_utc: 2026-05-17T12:13:38Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [H1,H2,H3,H4,H5,H6,H7,H8] -t 8 /tmp/gbbench-axf4-20ak5oi8/chandra_8.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [H1,H2,H3,H4,H5,H6,H7,H8] -t 8 /tmp/gbbench-axf4-q6gcr9nz/chandra_8.txt
 
 [stdout]
 F4 algorithm in 8 variables mod p=2147483647, 8 threads
@@ -56,14 +56,14 @@ degree=4 pairs=91/91 with pairs limit 2048
 343 x 295 with 4831 non-zero, 14.1 per row
 1.284 bytes per non-zero, matrix encoded in 0.006 MB
 182 rows to reduce, blocksize 15, max threads 13, zero reductions 1
-new=35 basis=64, step time=0.002 sec
+new=35 basis=64, step time=0.001 sec
 
 STEP 5
 degree=5 pairs=175/175 with pairs limit 2048
 714 x 519 with 14308 non-zero, 20.0 per row
 1.200 bytes per non-zero, matrix encoded in 0.016 MB
 350 rows to reduce, blocksize 21, max threads 17, zero reductions 1
-new=35 basis=99, step time=0.002 sec
+new=35 basis=99, step time=0.001 sec
 
 STEP 6
 degree=6 pairs=189/189 with pairs limit 2048
@@ -96,7 +96,7 @@ new=0 basis=128, step time=0.001 sec
 DONE inter-reduce
 256 x 256 with 12920 non-zero, 50.5 per row
 1.079 bytes per non-zero, matrix encoded in 0.013 MB
-128 basis elements, 0.011 sec
+128 basis elements, 0.010 sec
 
 [stderr]
 

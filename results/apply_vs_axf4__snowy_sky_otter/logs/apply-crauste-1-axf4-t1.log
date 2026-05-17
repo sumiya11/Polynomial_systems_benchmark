@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 192
 status: ok
 exit_code: 0
-wall_time_seconds: 0.099604
-process_wall_time_seconds: 0.099604
-started_at_utc: 2026-05-16T21:25:56Z
-finished_at_utc: 2026-05-16T21:25:56Z
+wall_time_seconds: 0.100236
+process_wall_time_seconds: 0.100236
+started_at_utc: 2026-05-17T12:14:15Z
+finished_at_utc: 2026-05-17T12:14:16Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [E_0,E_1,E_2,E_3,E_4,E_5,M_0,M_1,M_2,M_3,M_4,M_5,N_0,N_1,N_2,N_3,N_4,P_0,P_1,P_2,P_3,P_4,P_5,P_6,S_0,S_1,S_2,S_3,S_4,S_5,delta_EL_0,delta_LM_0,delta_NE_0,mu_EE_0,mu_LE_0,mu_LL_0,mu_M_0,mu_N_0,mu_PE_0,mu_PL_0,mu_P_0,rho_E_0,rho_P_0] -t 1 /tmp/gbbench-axf4-4wgh2d_7/crauste-1.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [E_0,E_1,E_2,E_3,E_4,E_5,M_0,M_1,M_2,M_3,M_4,M_5,N_0,N_1,N_2,N_3,N_4,P_0,P_1,P_2,P_3,P_4,P_5,P_6,S_0,S_1,S_2,S_3,S_4,S_5,delta_EL_0,delta_LM_0,delta_NE_0,mu_EE_0,mu_LE_0,mu_LL_0,mu_M_0,mu_N_0,mu_PE_0,mu_PL_0,mu_P_0,rho_E_0,rho_P_0] -t 1 /tmp/gbbench-axf4-g3b9001q/crauste-1.txt
 
 [stdout]
 F4 algorithm in 43 variables mod p=2147483647, 1 threads
@@ -42,7 +42,7 @@ degree=2 pairs=3/72 with pairs limit 2048
 13 x 11 with 34 non-zero, 2.6 per row
 2.529 bytes per non-zero, matrix encoded in 0.000 MB
 6 rows to reduce, blocksize 3, max threads 2, zero reductions 1
-new=3 basis=64, step time=0.000 sec
+new=3 basis=64, step time=0.001 sec
 
 STEP 3
 degree=2 pairs=2/66 with pairs limit 4096
@@ -98,7 +98,7 @@ degree=3 pairs=206/491 with pairs limit 4096
 924 x 610 with 19713 non-zero, 21.3 per row
 1.221 bytes per non-zero, matrix encoded in 0.023 MB
 412 rows to reduce, blocksize 21, max threads 20, zero reductions 1
-new=56 basis=232, step time=0.008 sec
+new=56 basis=232, step time=0.009 sec
 
 STEP 11
 degree=3 pairs=202/681 with pairs limit 8192
@@ -124,7 +124,7 @@ new=0 basis=217, step time=0.008 sec
 DONE inter-reduce
 286 x 178 with 5766 non-zero, 20.2 per row
 1.198 bytes per non-zero, matrix encoded in 0.007 MB
-140 basis elements, 0.045 sec
+140 basis elements, 0.046 sec
 
 [stderr]
 

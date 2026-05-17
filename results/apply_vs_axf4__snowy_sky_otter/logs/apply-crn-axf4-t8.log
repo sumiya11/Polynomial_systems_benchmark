@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 195
 status: ok
 exit_code: 0
-wall_time_seconds: 0.066139
-process_wall_time_seconds: 0.066139
-started_at_utc: 2026-05-16T21:26:21Z
-finished_at_utc: 2026-05-16T21:26:21Z
+wall_time_seconds: 0.073378
+process_wall_time_seconds: 0.073378
+started_at_utc: 2026-05-17T12:14:52Z
+finished_at_utc: 2026-05-17T12:14:52Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [k1_0,k2_0,k3_0,k4_0,k5_0,k6_0,x1_0,x1_1,x1_2,x1_3,x1_4,x1_5,x2_0,x2_1,x2_2,x2_3,x2_4,x2_5,x2_6,x3_0,x3_1,x3_2,x3_3,x3_4,x3_5,x3_6,x4_0,x4_1,x4_2,x4_3,x4_4,x4_5,x5_0,x5_1,x5_2,x5_3,x5_4,x5_5,x6_0,x6_1,x6_2,x6_3,x6_4,x6_5] -t 8 /tmp/gbbench-axf4-qut3ai8f/crn.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [k1_0,k2_0,k3_0,k4_0,k5_0,k6_0,x1_0,x1_1,x1_2,x1_3,x1_4,x1_5,x2_0,x2_1,x2_2,x2_3,x2_4,x2_5,x2_6,x3_0,x3_1,x3_2,x3_3,x3_4,x3_5,x3_6,x4_0,x4_1,x4_2,x4_3,x4_4,x4_5,x5_0,x5_1,x5_2,x5_3,x5_4,x5_5,x6_0,x6_1,x6_2,x6_3,x6_4,x6_5] -t 8 /tmp/gbbench-axf4-r0pi31mg/crn.txt
 
 [stdout]
 F4 algorithm in 44 variables mod p=2147483647, 8 threads
@@ -110,7 +110,7 @@ new=0 basis=93, step time=0.001 sec
 DONE inter-reduce
 120 x 68 with 642 non-zero, 5.3 per row
 1.748 bytes per non-zero, matrix encoded in 0.001 MB
-59 basis elements, 0.014 sec
+59 basis elements, 0.015 sec
 
 [stderr]
 
