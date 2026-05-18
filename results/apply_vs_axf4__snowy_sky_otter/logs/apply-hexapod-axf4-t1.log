@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 39
 status: ok
 exit_code: 0
-wall_time_seconds: 0.024387
-process_wall_time_seconds: 0.024387
-started_at_utc: 2026-05-17T12:39:34Z
-finished_at_utc: 2026-05-17T12:39:34Z
+wall_time_seconds: 0.024812
+process_wall_time_seconds: 0.024812
+started_at_utc: 2026-05-17T21:35:38Z
+finished_at_utc: 2026-05-17T21:35:38Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [t1,t2,t3,a,b,c] -t 1 /tmp/gbbench-axf4-0j5i1s4l/hexapod.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [t1,t2,t3,a,b,c] -t 1 /tmp/gbbench-axf4-gqlmi1n7/hexapod.txt
 
 [stdout]
 F4 algorithm in 6 variables mod p=2147483647, 1 threads
@@ -42,7 +42,7 @@ degree=4 pairs=7/7 with pairs limit 4096
 34 x 109 with 716 non-zero, 21.1 per row
 1.190 bytes per non-zero, matrix encoded in 0.001 MB
 14 rows to reduce, blocksize 6, max threads 3, zero reductions 1
-new=7 basis=13, step time=0.000 sec
+new=7 basis=13, step time=0.001 sec
 
 STEP 3
 degree=4 pairs=6/21 with pairs limit 8192
@@ -103,7 +103,7 @@ new=0 basis=89, step time=0.001 sec
 DONE inter-reduce
 112 x 96 with 4448 non-zero, 39.7 per row
 1.101 bytes per non-zero, matrix encoded in 0.005 MB
-56 basis elements, 0.009 sec
+56 basis elements, 0.010 sec
 
 [stderr]
 

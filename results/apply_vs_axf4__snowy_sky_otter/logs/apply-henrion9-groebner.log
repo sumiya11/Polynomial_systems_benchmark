@@ -1,0 +1,49 @@
+run_id: apply-henrion9-groebner
+track: apply_vs_axf4__snowy_sky_otter
+job_id: apply-henrion9-groebner
+system_ref: systems/henrion9/henrion9.md
+input_ref: systems/henrion9/txt/henrion9.txt
+software: Groebner.groebner
+version: 0.10.3
+runner: groebner_jl
+threads: 1
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 3600
+memory_limit_mb: 32768
+peak_memory_mb: 28904
+status: error
+exit_code: 134
+wall_time_seconds: 543.307890
+process_wall_time_seconds: 543.307890
+started_at_utc: 2026-05-17T18:48:12Z
+finished_at_utc: 2026-05-17T18:57:16Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/.juliaup/bin/julia --startup-file=no /tmp/gbbench-groebner-jl-jpir987z/groebner_jl_worker.jl --input /home/ademin/GroebnerBenchmark/systems/henrion9/txt/henrion9.txt --field GF(2147483647) --order degrevlex --threads 1 --method groebner
+
+[stdout]
+
+
+[stderr]
+terminate called after throwing an instance of 'std::bad_alloc'
+  what():  std::bad_alloc
+
+[3091596] signal 6 (-6): Abandon
+in expression starting at none:0
+pthread_kill at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+raise at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+abort at /lib/x86_64-linux-gnu/libc.so.6 (unknown line)
+unknown function (ip: 0x7f18ca2a9a3c) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6
+unknown function (ip: 0x7f18ca2bb449) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6
+_ZSt9terminatev at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6 (unknown line)
+__cxa_throw at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6 (unknown line)
+unknown function (ip: 0x7f18ca2a9658) at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libstdc++.so.6
+_ZN4llvm11LLVMContextC1Ev at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libLLVM.so.18.1jl (unknown line)
+jl_emit_codeinst_to_jit_impl at /home/ademin/.julia/juliaup/julia-1.12.4+0.x64.linux.gnu/bin/../lib/julia/libjulia-codegen.so.1.12 (unknown line)
+terminate called recursively
