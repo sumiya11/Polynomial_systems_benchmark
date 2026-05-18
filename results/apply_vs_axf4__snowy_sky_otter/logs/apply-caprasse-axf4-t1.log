@@ -15,17 +15,17 @@ memory_limit_mb: 32768
 peak_memory_mb: 28
 status: ok
 exit_code: 0
-wall_time_seconds: 0.016090
-process_wall_time_seconds: 0.016090
-started_at_utc: 2026-05-17T10:53:55Z
-finished_at_utc: 2026-05-17T10:53:55Z
+wall_time_seconds: 0.012219
+process_wall_time_seconds: 0.012219
+started_at_utc: 2026-05-17T16:10:27Z
+finished_at_utc: 2026-05-17T16:10:27Z
 runner_host: calcul-ouragan
 runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
 runner_machine: x86_64
 runner_cpu_count: 32
 runner_word_size: 64
 runner_python: 3.10.12
-command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x,y,z,t] -t 1 /tmp/gbbench-axf4-rjq5qgtk/caprasse.txt
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [x,y,z,t] -t 1 /tmp/gbbench-axf4-hx9_ykcc/caprasse.txt
 
 [stdout]
 F4 algorithm in 4 variables mod p=2147483647, 1 threads
@@ -42,14 +42,14 @@ degree=5 pairs=1/6 with pairs limit 2048
 3 x 7 with 13 non-zero, 4.3 per row
 1.923 bytes per non-zero, matrix encoded in 0.000 MB
 2 rows to reduce, blocksize 1, max threads 2, zero reductions 1
-new=1 basis=6, step time=0.001 sec
+new=1 basis=6, step time=0.000 sec
 
 STEP 3
 degree=6 pairs=6/8 with pairs limit 2048
 34 x 48 with 198 non-zero, 5.8 per row
 1.687 bytes per non-zero, matrix encoded in 0.000 MB
 12 rows to reduce, blocksize 6, max threads 2, zero reductions 1
-new=5 basis=11, step time=0.001 sec
+new=5 basis=11, step time=0.000 sec
 
 STEP 4
 degree=5 pairs=3/14 with pairs limit 2048
@@ -91,7 +91,7 @@ degree=7 pairs=7/7 with pairs limit 2048
 75 x 91 with 544 non-zero, 7.3 per row
 1.551 bytes per non-zero, matrix encoded in 0.001 MB
 14 rows to reduce, blocksize 6, max threads 3, zero reductions 1
-new=2 basis=26, step time=0.001 sec
+new=2 basis=26, step time=0.000 sec
 
 STEP 10
 degree=8 pairs=6/6 with pairs limit 2048
@@ -103,7 +103,7 @@ new=0 basis=26, step time=0.000 sec
 DONE inter-reduce
 54 x 82 with 482 non-zero, 8.9 per row
 1.448 bytes per non-zero, matrix encoded in 0.001 MB
-26 basis elements, 0.005 sec
+26 basis elements, 0.003 sec
 
 [stderr]
 

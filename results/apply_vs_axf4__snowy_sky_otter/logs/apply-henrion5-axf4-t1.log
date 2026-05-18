@@ -1,0 +1,123 @@
+run_id: apply-henrion5-axf4-t1
+track: apply_vs_axf4__snowy_sky_otter
+job_id: apply-henrion5-axf4-t1
+system_ref: systems/henrion5/henrion5.md
+input_ref: systems/henrion5/txt/henrion5.txt
+software: axf4 -t 1
+version: local-copy
+runner: axf4
+threads: 1
+field: GF(2147483647)
+order: degrevlex
+hardware_track: 
+timeout_s: 3600
+memory_limit_mb: 32768
+peak_memory_mb: 37
+status: ok
+exit_code: 0
+wall_time_seconds: 0.025122
+process_wall_time_seconds: 0.025122
+started_at_utc: 2026-05-17T18:11:15Z
+finished_at_utc: 2026-05-17T18:11:15Z
+runner_host: calcul-ouragan
+runner_os: Linux-6.1.0-1029-oem-x86_64-with-glibc2.35
+runner_machine: x86_64
+runner_cpu_count: 32
+runner_word_size: 64
+runner_python: 3.10.12
+command: /home/ademin/GroebnerBenchmark/../axgrob/axf4 -p 2147483647 -v [f1,f2,f3,f4,f5,t] -t 1 /tmp/gbbench-axf4-b_l4bssl/henrion5.txt
+
+[stdout]
+F4 algorithm in 6 variables mod p=2147483647, 1 threads
+
+STEP 1
+degree=1 pairs=1/5 with pairs limit 2048
+3 x 7 with 18 non-zero, 6.0 per row
+1.667 bytes per non-zero, matrix encoded in 0.000 MB
+2 rows to reduce, blocksize 1, max threads 2, zero reductions 1
+new=1 basis=7, step time=0.001 sec
+
+STEP 2
+degree=2 pairs=1/4 with pairs limit 2048
+12 x 25 with 77 non-zero, 6.4 per row
+1.623 bytes per non-zero, matrix encoded in 0.000 MB
+2 rows to reduce, blocksize 1, max threads 2, zero reductions 1
+new=1 basis=8, step time=0.001 sec
+
+STEP 3
+degree=3 pairs=1/3 with pairs limit 2048
+29 x 57 with 229 non-zero, 7.9 per row
+1.507 bytes per non-zero, matrix encoded in 0.000 MB
+2 rows to reduce, blocksize 1, max threads 2, zero reductions 1
+new=1 basis=8, step time=0.000 sec
+
+STEP 4
+degree=4 pairs=2/3 with pairs limit 2048
+47 x 94 with 524 non-zero, 11.1 per row
+1.359 bytes per non-zero, matrix encoded in 0.001 MB
+4 rows to reduce, blocksize 3, max threads 2, zero reductions 1
+new=2 basis=9, step time=0.001 sec
+
+STEP 5
+degree=5 pairs=4/4 with pairs limit 2048
+64 x 130 with 1323 non-zero, 20.7 per row
+1.193 bytes per non-zero, matrix encoded in 0.002 MB
+8 rows to reduce, blocksize 6, max threads 2, zero reductions 1
+new=3 basis=11, step time=0.001 sec
+
+STEP 6
+degree=6 pairs=6/6 with pairs limit 2048
+68 x 151 with 2507 non-zero, 36.9 per row
+1.108 bytes per non-zero, matrix encoded in 0.003 MB
+12 rows to reduce, blocksize 6, max threads 2, zero reductions 1
+new=4 basis=13, step time=0.001 sec
+
+STEP 7
+degree=7 pairs=10/10 with pairs limit 2048
+112 x 203 with 5726 non-zero, 51.1 per row
+1.078 bytes per non-zero, matrix encoded in 0.006 MB
+20 rows to reduce, blocksize 6, max threads 4, zero reductions 1
+new=5 basis=18, step time=0.001 sec
+
+STEP 8
+degree=8 pairs=15/15 with pairs limit 2048
+134 x 225 with 7266 non-zero, 54.2 per row
+1.074 bytes per non-zero, matrix encoded in 0.007 MB
+30 rows to reduce, blocksize 9, max threads 4, zero reductions 1
+new=6 basis=24, step time=0.001 sec
+
+STEP 9
+degree=9 pairs=18/18 with pairs limit 2048
+158 x 246 with 9851 non-zero, 62.3 per row
+1.064 bytes per non-zero, matrix encoded in 0.010 MB
+36 rows to reduce, blocksize 9, max threads 4, zero reductions 1
+new=5 basis=29, step time=0.001 sec
+
+STEP 10
+degree=10 pairs=15/15 with pairs limit 2048
+161 x 254 with 10835 non-zero, 67.3 per row
+1.059 bytes per non-zero, matrix encoded in 0.011 MB
+30 rows to reduce, blocksize 9, max threads 4, zero reductions 1
+new=3 basis=32, step time=0.001 sec
+
+STEP 11
+degree=11 pairs=9/9 with pairs limit 2048
+152 x 255 with 10318 non-zero, 67.9 per row
+1.059 bytes per non-zero, matrix encoded in 0.010 MB
+18 rows to reduce, blocksize 6, max threads 3, zero reductions 1
+new=1 basis=33, step time=0.001 sec
+
+STEP 12
+degree=12 pairs=3/3 with pairs limit 2048
+139 x 253 with 8970 non-zero, 64.5 per row
+1.062 bytes per non-zero, matrix encoded in 0.009 MB
+6 rows to reduce, blocksize 3, max threads 2, zero reductions 1
+new=0 basis=33, step time=0.001 sec
+
+DONE inter-reduce
+66 x 153 with 6112 non-zero, 92.6 per row
+1.043 bytes per non-zero, matrix encoded in 0.006 MB
+33 basis elements, 0.010 sec
+
+[stderr]
+
