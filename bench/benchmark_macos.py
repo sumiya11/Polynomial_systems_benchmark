@@ -19,8 +19,28 @@ def _resource_limit_preexec(memory_limit_mb: int):
         import resource
 
         for name in ("RLIMIT_AS", "RLIMIT_DATA", "RLIMIT_RSS"):
-            if hasattr(resource, name):
-                resource.setrlimit(getattr(resource, name), (limit_bytes, limit_bytes))
+            if not hasattr(resource, name):
+                continue
+
+            resource_type = getattr(resource, name)
+            try:
+                _current_soft, current_hard = resource.getrlimit(resource_type)
+            except (OSError, ValueError):
+                continue
+
+            if current_hard in (-1, resource.RLIM_INFINITY):
+                target_limit = limit_bytes
+            else:
+                target_limit = min(limit_bytes, current_hard)
+
+            if target_limit <= 0:
+                continue
+
+            try:
+                resource.setrlimit(resource_type, (target_limit, target_limit))
+            except (OSError, ValueError):
+                # Best effort only: one unsupported limit should not prevent exec.
+                continue
 
     return apply_limit
 

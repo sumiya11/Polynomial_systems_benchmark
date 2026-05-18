@@ -937,7 +937,7 @@ function renderCurrentTrackArtifacts(trackName, rows) {
 
   document.getElementById("reproduceCommand").textContent = [
     "git clone https://github.com/sumiya11/Polynomial_systems_benchmark.git",
-    "cd GroebnerBenchmark",
+    "cd Polynomial_systems_benchmark",
     "python -m pip install -r requirements.txt",
     replayCommand,
   ].join("\n");
